@@ -1,0 +1,53 @@
+# Files and folders to exclude from deployment artifact
+# (Adjust according to hosting platform; for Laravel typical production build)
+
+# Node & build caches
+node_modules/
+node_modules_old/
+.dist/
+dist/
+.vite/
+
+# Tests & local tooling
+tests/
+phpunit.xml
+
+# Local environment & example envs
+.env.*
+!.env.example
+
+# Logs & runtime generated content (create writable dirs on server instead)
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+!storage/.gitignore
+
+# Source assets (if you deploy only compiled build). If server builds, keep them.
+# Uncomment to exclude:
+# resources/css/
+# resources/js/
+# tailwind.config.js
+# postcss.config.js
+# vite.config.js
+
+# Docs & guides (optional)
+README.md
+MAILGUN_SETUP_GUIDE.md
+CHANGELOG.md
+
+# Misc scripts not needed in production
+final_test.php
+fix_admin_password.php
+grant_privileges.php
+check_admins.php
+setup_postgres.php
+
+# IDE/editor
+.vscode/
+.idea/
+*.code-workspace
+
+# OS / temp
+Thumbs.db
+.DS_Store

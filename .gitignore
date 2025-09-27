@@ -1,0 +1,74 @@
+
+# OS / Editor / Misc
+*.log
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+.phpactor.json
+/.idea
+/.vscode
+/.fleet
+/.zed
+.nova
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+auth.json
+Homestead.json
+Homestead.yaml
+
+# Dependencies
+/node_modules
+/vendor
+
+# Laravel caches & compiled
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitkeep
+/.phpunit.cache
+.phpunit.result.cache
+
+# Storage (keep only gitkeeps)
+/storage/*
+!/storage/app
+!/storage/app/public
+!/storage/framework
+!/storage/framework/cache
+!/storage/framework/sessions
+!/storage/framework/views
+!/storage/logs
+/storage/app/*
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+!/storage/app/.gitignore
+!/storage/logs/.gitignore
+!/storage/framework/cache/.gitignore
+!/storage/framework/sessions/.gitignore
+!/storage/framework/views/.gitignore
+!/storage/app/public/.gitignore
+
+# Uploaded public storage symlink target
+/public/storage
+
+# Vite build & dev markers
+/public/build
+/public/hot
+
+# Coverage / temp
+coverage
+/.cache
+
+# Composer dump keys
+/storage/*.key
+/storage/pail
+
+# Generated assets placed manually (if any)
+public/css/*.map
+public/js/*.map
+
+# Ignore user-generated media (if manually placed in public/imgs/uploads)
+public/imgs/uploads

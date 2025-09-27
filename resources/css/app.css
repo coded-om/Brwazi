@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#main-header.is-scrolled {
+    background-color: rgba(20, 22, 64, 0.8);
+    -webkit-backdrop-filter: saturate(160%) blur(8px);
+    backdrop-filter: saturate(160%) blur(8px);
+}
+
+@media (max-width: 767.98px) {
+    #main-header .desktop-header,
+    #main-header .tablet-header {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    #main-header .mobile-header {
+        display: none !important;
+    }
+}
