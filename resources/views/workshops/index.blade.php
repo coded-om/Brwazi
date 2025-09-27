@@ -23,17 +23,30 @@
                 @foreach($workshops as $workshop)
                     @php
                         $soon = $workshop->starts_at->isFuture() && $workshop->starts_at->diffInDays() <= 30;
+                        $coverRaw = $workshop->cover_image_path;
+                        $coverUrl = $coverRaw
+                            ? (preg_match('/^https?:/i', $coverRaw) ? $coverRaw : asset('storage/' . ltrim($coverRaw,'/')))
+                            : asset('imgs/placeholder-wide.jpg');
+                        $avatarRaw = $workshop->presenter_avatar_path;
+                        $avatarUrl = $avatarRaw
+                            ? (preg_match('/^https?:/i', $avatarRaw) ? $avatarRaw : asset('storage/' . ltrim($avatarRaw,'/')))
+                            : null;
                     @endphp
                     <article class="group flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-md ring-1 ring-slate-100 transition hover:shadow-xl">
                         <div class="relative h-56 w-full overflow-hidden">
-                            <img src="{{ $workshop->cover_image_path ? asset($workshop->cover_image_path) : asset('imgs/placeholder-wide.jpg') }}" alt="{{ $workshop->title }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+                            <img src="{{ $coverUrl }}" alt="{{ $workshop->title }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
                             @if($soon)
                                 <span class="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-amber-500/95 px-3 py-1 text-xs font-medium text-white shadow-sm">
                                     <i class="fa-regular fa-clock"></i> قريباً
                                 </span>
                             @endif
+                            @if($avatarUrl)
+                                <div class="absolute -bottom-8 inset-x-0 flex justify-center">
+                                    <img src="{{ $avatarUrl }}" alt="{{ $workshop->presenter_name }}" class="h-16 w-16 rounded-xl object-cover ring-4 ring-white shadow-md" loading="lazy">
+                                </div>
+                            @endif
                         </div>
-                        <div class="flex flex-1 flex-col p-6">
+                        <div class="flex flex-1 flex-col p-6 @if($avatarUrl) pt-12 @endif">
                             <header class="mb-4 space-y-2 text-center">
                                 <h2 class="text-lg font-bold leading-snug text-slate-900">{{ $workshop->title }}</h2>
                                 @if($workshop->short_description)
