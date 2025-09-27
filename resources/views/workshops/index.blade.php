@@ -24,10 +24,10 @@
                     @php
                         $soon = $workshop->starts_at->isFuture() && $workshop->starts_at->diffInDays() <= 30;
                         $coverRaw = $workshop->cover_image_path;
-                        // NOTE: make sure placeholder-wide.jpg exists under public/imgs/placeholder-wide.jpg
+                        // Fallback now uses an existing image (rec1.jpg) to avoid 404 for placeholder-wide.jpg
                         $coverUrl = $coverRaw
                             ? (preg_match('/^https?:/i', $coverRaw) ? $coverRaw : asset('storage/' . ltrim($coverRaw,'/')))
-                            : asset('imgs/placeholder-wide.jpg');
+                            : asset('imgs/pic/rec1.jpg');
                         $avatarRaw = $workshop->presenter_avatar_path;
                         $avatarUrl = $avatarRaw
                             ? (preg_match('/^https?:/i', $avatarRaw) ? $avatarRaw : asset('storage/' . ltrim($avatarRaw, '/')))
