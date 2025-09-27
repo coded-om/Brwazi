@@ -61,25 +61,27 @@ class WorkshopResource extends Resource
             Tables\Columns\IconColumn::make('is_published')->label('منشور')->boolean(),
             Tables\Columns\TextColumn::make('starts_at')->label('البداية')->dateTime('Y-m-d H:i'),
         ])->filters([
-            Tables\Filters\TernaryFilter::make('is_approved')->label('الموافقة'),
-            Tables\Filters\TernaryFilter::make('is_published')->label('النشر'),
-        ])->actions([
-            Tables\Actions\Action::make('approve')
-                ->label('اعتماد')
-                ->icon('heroicon-o-check')
-                ->visible(fn(Workshop $record) => ! $record->is_approved)
-                ->action(function (Workshop $record) { $record->update(['is_approved' => true]); }),
-            Tables\Actions\Action::make('publish')
-                ->label('نشر/إلغاء')
-                ->icon('heroicon-o-eye')
-                ->action(function (Workshop $record) { $record->update(['is_published' => ! $record->is_published]); }),
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ])->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]),
-        ]);
+                    Tables\Filters\TernaryFilter::make('is_approved')->label('الموافقة'),
+                    Tables\Filters\TernaryFilter::make('is_published')->label('النشر'),
+                ])->actions([
+                    Tables\Actions\Action::make('approve')
+                        ->label('اعتماد')
+                        ->icon('heroicon-o-check')
+                        ->visible(fn(Workshop $record) => !$record->is_approved)
+                        ->action(function (Workshop $record) {
+                            $record->update(['is_approved' => true]); }),
+                    Tables\Actions\Action::make('publish')
+                        ->label('نشر/إلغاء')
+                        ->icon('heroicon-o-eye')
+                        ->action(function (Workshop $record) {
+                            $record->update(['is_published' => !$record->is_published]); }),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])->bulkActions([
+                    Tables\Actions\BulkActionGroup::make([
+                        Tables\Actions\DeleteBulkAction::make(),
+                    ]),
+                ]);
     }
 
     public static function getPages(): array

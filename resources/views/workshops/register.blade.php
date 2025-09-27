@@ -19,68 +19,71 @@
                         <div class="space-y-6">
                             <div class="rounded-2xl bg-emerald-50 p-6 border border-emerald-100">
                                 <h2 class="font-semibold text-emerald-700 mb-2">التسجيل لهذه الورشة خارجي</h2>
-                                <p class="text-sm text-emerald-700/80 mb-4">التسجيل يتم عبر رابط خارجي يوفره مقدم الورشة.</p>
-                                <a href="{{ $workshop->external_apply_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700">
+                                <p class="text-sm text-emerald-700/80 mb-4">التسجيل يتم عبر رابط خارجي يوفره مقدم الورشة.
+                                </p>
+                                <a href="{{ $workshop->external_apply_url }}" target="_blank" rel="noopener"
+                                    class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700">
                                     الانتقال لصفحة التسجيل
                                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </a>
                             </div>
-                            <a href="{{ route('workshops.index') }}" class="text-sm text-slate-500 hover:text-slate-700">عودة إلى الورشات</a>
+                            <a href="{{ route('workshops.index') }}"
+                                class="text-sm text-slate-500 hover:text-slate-700">عودة إلى الورشات</a>
                         </div>
                     @else
-                    <form action="{{ route('workshops.register.store', $workshop) }}" method="POST" class="space-y-6">
-                        @csrf
+                        <form action="{{ route('workshops.register.store', $workshop) }}" method="POST" class="space-y-6">
+                            @csrf
 
-                        <div class="space-y-2">
-                            <label for="name" class="block text-sm font-medium text-indigo-900">الاسم الكامل</label>
-                            <input id="name" name="name" type="text" value="{{ old('name', $prefill['name'] ?? '') }}"
-                                class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                                placeholder="مثال: سارة العبدلي" required>
-                            @error('name')
-                                <p class="text-xs text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
+                            <div class="space-y-2">
+                                <label for="name" class="block text-sm font-medium text-indigo-900">الاسم الكامل</label>
+                                <input id="name" name="name" type="text" value="{{ old('name', $prefill['name'] ?? '') }}"
+                                    class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                                    placeholder="مثال: سارة العبدلي" required>
+                                @error('name')
+                                    <p class="text-xs text-rose-500">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                        <div class="space-y-2">
-                            <label for="email" class="block text-sm font-medium text-indigo-900">البريد
-                                الإلكتروني</label>
-                            <input id="email" name="email" type="email"
-                                value="{{ old('email', $prefill['email'] ?? '') }}"
-                                class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                                placeholder="example@email.com" required>
-                            @error('email')
-                                <p class="text-xs text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
+                            <div class="space-y-2">
+                                <label for="email" class="block text-sm font-medium text-indigo-900">البريد
+                                    الإلكتروني</label>
+                                <input id="email" name="email" type="email"
+                                    value="{{ old('email', $prefill['email'] ?? '') }}"
+                                    class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                                    placeholder="example@email.com" required>
+                                @error('email')
+                                    <p class="text-xs text-rose-500">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                        <div class="space-y-2">
-                            <label for="phone" class="block text-sm font-medium text-indigo-900">رقم التواصل
-                                (اختياري)</label>
-                            <input id="phone" name="phone" type="text"
-                                value="{{ old('phone', $prefill['phone'] ?? '') }}"
-                                class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                                placeholder="05xxxxxxxx">
-                            @error('phone')
-                                <p class="text-xs text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
+                            <div class="space-y-2">
+                                <label for="phone" class="block text-sm font-medium text-indigo-900">رقم التواصل
+                                    (اختياري)</label>
+                                <input id="phone" name="phone" type="text"
+                                    value="{{ old('phone', $prefill['phone'] ?? '') }}"
+                                    class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                                    placeholder="05xxxxxxxx">
+                                @error('phone')
+                                    <p class="text-xs text-rose-500">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                        <div class="space-y-2">
-                            <label for="notes" class="block text-sm font-medium text-indigo-900">رسالة أو ملاحظات
-                                إضافية</label>
-                            <textarea id="notes" name="notes" rows="4"
-                                class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                                placeholder="أخبرنا عن توقعاتك أو أي استفسارات لديك">{{ old('notes') }}</textarea>
-                            @error('notes')
-                                <p class="text-xs text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
+                            <div class="space-y-2">
+                                <label for="notes" class="block text-sm font-medium text-indigo-900">رسالة أو ملاحظات
+                                    إضافية</label>
+                                <textarea id="notes" name="notes" rows="4"
+                                    class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                                    placeholder="أخبرنا عن توقعاتك أو أي استفسارات لديك">{{ old('notes') }}</textarea>
+                                @error('notes')
+                                    <p class="text-xs text-rose-500">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                        <button type="submit"
-                            class="w-full rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200">
-                            إرسال طلب المشاركة
-                        </button>
-                    </form>
+                            <button type="submit"
+                                class="w-full rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200">
+                                إرسال طلب المشاركة
+                            </button>
+                        </form>
                     @endif
                 </div>
 
@@ -108,7 +111,9 @@
                         @endif
                         <li class="flex items-center gap-3">
                             @if($workshop->presenter_avatar_path)
-                                <img src="{{ asset('storage/' . ltrim($workshop->presenter_avatar_path, '/')) }}" alt="{{ $workshop->presenter_name }}" class="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-700/40">
+                                <img src="{{ asset('storage/' . ltrim($workshop->presenter_avatar_path, '/')) }}"
+                                    alt="{{ $workshop->presenter_name }}"
+                                    class="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-700/40">
                             @else
                                 <i class="fa-regular fa-user text-indigo-300"></i>
                             @endif
