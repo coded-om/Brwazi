@@ -14,17 +14,23 @@ class Workshop extends Model
         'title',
         'slug',
         'presenter_name',
+        'presenter_bio',
+        'presenter_avatar_path',
         'art_type',
         'starts_at',
         'duration_minutes',
         'location',
+        'external_apply_url',
         'short_description',
         'is_published',
+        'is_approved',
+        'submitted_by_user_id',
     ];
 
     protected $casts = [
         'starts_at' => 'datetime',
         'is_published' => 'boolean',
+        'is_approved' => 'boolean',
     ];
 
     public function getRouteKeyName(): string
@@ -37,14 +43,29 @@ class Workshop extends Model
         return $this->hasMany(WorkshopRegistration::class);
     }
 
+    public function submitter()
+    {
+        return $this->belongsTo(User::class, 'submitted_by_user_id');
+    }
+
     public function scopePublished($query)
     {
-        return $query->where('is_published', true);
+        return $query->where('is_published', true)->where('is_approved', true);
     }
 
     public function scopeUpcoming($query)
     {
         return $query->where('starts_at', '>=', now());
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('is_approved', true);
+    }
+
+    public function scopePendingApproval($query)
+    {
+        return $query->where('is_approved', false);
     }
 
     public function getDurationLabelAttribute(): ?string

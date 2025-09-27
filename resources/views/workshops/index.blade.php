@@ -38,10 +38,14 @@
                                     {{ $workshop->art_type ?? 'فن متنوع' }}
                                 </span>
                                 <h2 class="text-xl font-semibold text-indigo-950">{{ $workshop->title }}</h2>
-                                <div class="flex flex-wrap gap-3 text-sm text-slate-500">
-                                    <span class="inline-flex items-center gap-1">
-                                        <i class="fa-regular fa-user"></i>
-                                        {{ $workshop->presenter_name }}
+                                <div class="flex flex-wrap gap-3 text-sm text-slate-500 items-center">
+                                    <span class="inline-flex items-center gap-2">
+                                        @if($workshop->presenter_avatar_path)
+                                            <img src="{{ asset('storage/' . ltrim($workshop->presenter_avatar_path, '/')) }}" alt="{{ $workshop->presenter_name }}" class="h-6 w-6 rounded-full object-cover">
+                                        @else
+                                            <i class="fa-regular fa-user"></i>
+                                        @endif
+                                        <span>{{ $workshop->presenter_name }}</span>
                                     </span>
                                     <span class="inline-flex items-center gap-1">
                                         <i class="fa-regular fa-calendar"></i>
@@ -74,11 +78,18 @@
                                         {{ $workshop->location }}
                                     </span>
                                 @endif
-                                <a href="{{ route('workshops.register', $workshop) }}"
-                                    class="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">
-                                    شارك الآن
-                                    <i class="fa-solid fa-arrow-left"></i>
-                                </a>
+                                @if($workshop->external_apply_url)
+                                    <a href="{{ $workshop->external_apply_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700">
+                                        التسجيل الخارجي
+                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    </a>
+                                @else
+                                    <a href="{{ route('workshops.register', $workshop) }}"
+                                        class="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">
+                                        شارك الآن
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </article>
