@@ -15,6 +15,7 @@ use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\DisputeController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\WorkshopController;
+use App\Http\Controllers\LiteratureWorkshopController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,13 @@ Route::middleware(['auth', 'not.banned'])->group(function () {
     Route::post('/workshops/{workshop:slug}/register', [WorkshopController::class, 'storeRegistration'])->name('workshops.register.store');
 });
 // User submission (verified users)
+// Literature Workshops
+Route::get('/literature-workshops', [LiteratureWorkshopController::class, 'index'])->name('literature_workshops.index');
+Route::middleware(['auth', 'not.banned'])->group(function () {
+    Route::get('/literature-workshops/{literatureWorkshop:slug}/register', [LiteratureWorkshopController::class, 'showRegistrationForm'])->name('literature_workshops.register');
+    Route::post('/literature-workshops/{literatureWorkshop:slug}/register', [LiteratureWorkshopController::class, 'storeRegistration'])->name('literature_workshops.register.store');
+});
+
 Route::middleware(['auth', 'not.banned'])->group(function () {
     Route::get('/workshops/submit/new', [\App\Http\Controllers\UserWorkshopSubmissionController::class, 'create'])->name('workshops.submit.create');
     Route::post('/workshops/submit/new', [\App\Http\Controllers\UserWorkshopSubmissionController::class, 'store'])->name('workshops.submit.store');

@@ -43,6 +43,7 @@ class WorkshopResource extends Resource
             Forms\Components\TextInput::make('art_type')->label('نوع الفن'),
             Forms\Components\DateTimePicker::make('starts_at')->label('تاريخ ووقت البداية')->required()->seconds(false),
             Forms\Components\TextInput::make('duration_minutes')->label('المدة بالدقائق')->numeric()->minValue(15)->maxValue(1440),
+            Forms\Components\TextInput::make('capacity')->label('السعة القصوى')->numeric()->minValue(1)->maxValue(10000)->helperText('اتركه فارغاً لعدد غير محدود'),
             Forms\Components\TextInput::make('location')->label('الموقع / المنصة'),
             Forms\Components\Textarea::make('short_description')->label('وصف مختصر')->rows(3),
             Forms\Components\TextInput::make('external_apply_url')->label('رابط خارجي للتسجيل')->url(),
@@ -58,35 +59,7 @@ class WorkshopResource extends Resource
             Forms\Components\Select::make('submitted_by_user_id')->relationship('submitter', 'email')->label('مقدم بواسطة (مستخدم)')->searchable()->preload(),
         ])
             ->columns(2)
-            ->model(Workshop::class)
-            ->saveRelationshipsUsing(function ($record, $form) {
-                // process raw images if present
-                $imageService = app(\App\Services\ImageService::class);
-                $dirty = false;
-                if ($record->cover_image_path && str_contains($record->cover_image_path, '/raw/')) {
-                    $rawPath = $record->cover_image_path; // storage path relative
-                    $full = storage_path('app/public/' . $rawPath);
-                    if (is_file($full)) {
-                        $uploaded = new \Illuminate\Http\UploadedFile($full, basename($full));
-                        $processed = $imageService->coverWideWebp($uploaded, 1280, 'workshops/covers');
-                        $record->cover_image_path = $processed['path'];
-                        $dirty = true;
-                    }
-                }
-                if ($record->presenter_avatar_path && str_contains($record->presenter_avatar_path, '/raw/')) {
-                    $rawPath = $record->presenter_avatar_path;
-                    $full = storage_path('app/public/' . $rawPath);
-                    if (is_file($full)) {
-                        $uploaded = new \Illuminate\Http\UploadedFile($full, basename($full));
-                        $processed = $imageService->uploadAndCrop($uploaded, 'workshops/presenters', 400, 400);
-                        $record->presenter_avatar_path = $processed['path'];
-                        $dirty = true;
-                    }
-                }
-                if ($dirty) {
-                    $record->save();
-                }
-            });
+            ->model(Workshop::class);
     }
 
     public static function table(Table $table): Table
@@ -102,6 +75,33 @@ class WorkshopResource extends Resource
                 ->square(),
             Tables\Columns\TextColumn::make('title')->label('العنوان')->searchable()->sortable(),
             Tables\Columns\TextColumn::make('presenter_name')->label('المقدم')->searchable(),
+            Tables\Columns\TextColumn::make('registrations_count')
+                ->label('المسجلون')
+                ->badge()
+                ->sortable()
+                ->alignCenter()
+                ->color(fn(Workshop $r) => ($r->capacity && $r->registrations_count >= $r->capacity) ? 'danger' : 'success')
+                ->formatStateUsing(fn(Workshop $r) => $r->capacity ? ($r->registrations_count . ' / ' . $r->capacity) : $r->registrations_count)
+                ->tooltip(fn(Workshop $r) => $r->capacity ? 'عدد المسجلين من السعة' : 'عدد المسجلين'),
+            Tables\Columns\TextColumn::make('capacity_progress')
+                ->label('نسبة')
+                ->html()
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->getStateUsing(function (Workshop $r) {
+                    if (!$r->capacity)
+                        return '—';
+                    $count = $r->registrations_count ?? $r->registrations()->count();
+                    $cap = max(1, $r->capacity);
+                    $percent = min(100, round(($count / $cap) * 100));
+                    $barColor = 'bg-emerald-500';
+                    if ($percent >= 90)
+                        $barColor = 'bg-rose-500';
+                    elseif ($percent >= 70)
+                        $barColor = 'bg-amber-500';
+                    return "<div class='w-24'><div class='h-2 rounded bg-slate-200 overflow-hidden'><div class='h-2 $barColor' style='width: {$percent}%'></div></div><div class='mt-1 text-[10px] text-slate-600 text-center'>{$percent}%</div></div>";
+                })
+                ->tooltip(fn(Workshop $r) => $r->capacity ? 'نسبة الامتلاء' : null),
+            Tables\Columns\TextColumn::make('capacity')->label('السعة')->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\IconColumn::make('is_approved')->label('موافقة')->boolean(),
             Tables\Columns\IconColumn::make('is_published')->label('منشور')->boolean(),
             Tables\Columns\TextColumn::make('starts_at')->label('البداية')->dateTime('Y-m-d H:i'),
@@ -119,9 +119,54 @@ class WorkshopResource extends Resource
                     Tables\Actions\Action::make('publish')
                         ->label('نشر/إلغاء')
                         ->icon('heroicon-o-eye')
+                        ->disabled(fn(Workshop $record) => ($record->capacity && $record->registrations_count >= $record->capacity) && !$record->is_published)
+                        ->tooltip(fn(Workshop $record) => ($record->capacity && $record->registrations_count >= $record->capacity && !$record->is_published) ? 'ممتلئة - لا يمكن نشرها' : null)
                         ->action(function (Workshop $record) {
+                            if ($record->capacity && $record->registrations()->count() >= $record->capacity && !$record->is_published) {
+                                return; // guard when full
+                            }
                             $record->update(['is_published' => !$record->is_published]);
                         }),
+                    Tables\Actions\Action::make('registrations')
+                        ->label('المسجلون')
+                        ->icon('heroicon-o-users')
+                        ->modalHeading('قائمة المسجلين')
+                        ->modalWidth('3xl')
+                        ->modalContent(fn(Workshop $record) => view('admin.partials.workshop-registrations-list', [
+                            'workshop' => $record,
+                            'registrations' => $record->registrations()->latest()->get(),
+                        ]))
+                        ->visible(fn(Workshop $record) => $record->registrations()->exists()),
+                    Tables\Actions\Action::make('export_csv')
+                        ->label('تصدير CSV')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function (Workshop $record) {
+                            $filename = 'workshop-' . $record->id . '-registrations.csv';
+                            $headers = [
+                                'Content-Type' => 'text/csv; charset=UTF-8',
+                                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                            ];
+                            return response()->streamDownload(function () use ($record) {
+                                $out = fopen('php://output', 'w');
+                                // UTF-8 BOM for Excel Arabic support
+                                fwrite($out, "\xEF\xBB\xBF");
+                                fputcsv($out, ['ID', 'Name', 'Email', 'Phone', 'WhatsApp', 'Registered At']);
+                                $record->registrations()->orderBy('id')->chunk(500, function ($chunk) use ($out) {
+                                    foreach ($chunk as $r) {
+                                        fputcsv($out, [
+                                            $r->id,
+                                            $r->name,
+                                            $r->email,
+                                            $r->phone,
+                                            $r->whatsapp_phone,
+                                            $r->created_at->toDateTimeString(),
+                                        ]);
+                                    }
+                                });
+                                fclose($out);
+                            }, $filename, $headers);
+                        })
+                        ->visible(fn(Workshop $record) => $record->registrations()->exists()),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ])->bulkActions([
@@ -145,5 +190,47 @@ class WorkshopResource extends Resource
         return [
             \App\Filament\Resources\WorkshopResource\RelationManagers\RegistrationsRelationManager::class,
         ];
+    }
+
+    /**
+     * Process raw uploaded images (cover & presenter avatar) converting them into their
+     * final cropped / webp versions when paths still point to the temporary raw directory.
+     */
+    public static function processImages(Workshop $record): void
+    {
+        $imageService = app(\App\Services\ImageService::class);
+        $dirty = false;
+
+        if ($record->cover_image_path && str_contains($record->cover_image_path, '/raw/')) {
+            $rawPath = $record->cover_image_path;
+            $full = storage_path('app/public/' . $rawPath);
+            if (is_file($full)) {
+                $uploaded = new \Illuminate\Http\UploadedFile($full, basename($full));
+                $processed = $imageService->coverWideWebp($uploaded, 1280, 'workshops/covers');
+                $record->cover_image_path = $processed['path'];
+                $dirty = true;
+            }
+        }
+
+        if ($record->presenter_avatar_path && str_contains($record->presenter_avatar_path, '/raw/')) {
+            $rawPath = $record->presenter_avatar_path;
+            $full = storage_path('app/public/' . $rawPath);
+            if (is_file($full)) {
+                $uploaded = new \Illuminate\Http\UploadedFile($full, basename($full));
+                $processed = $imageService->uploadAndCrop($uploaded, 'workshops/presenters', 400, 400);
+                $record->presenter_avatar_path = $processed['path'];
+                $dirty = true;
+            }
+        }
+
+        if ($dirty) {
+            $record->save();
+        }
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        // eager load count for efficiency in table
+        return parent::getEloquentQuery()->withCount('registrations');
     }
 }

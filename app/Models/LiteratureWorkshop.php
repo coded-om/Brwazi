@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\LiteratureWorkshopRegistration; // registration model
 use App\Models\Concerns\HasWorkshopCommon;
 
-class Workshop extends Model
+class LiteratureWorkshop extends Model
 {
     use HasFactory, HasWorkshopCommon;
 
@@ -17,7 +18,7 @@ class Workshop extends Model
         'presenter_name',
         'presenter_bio',
         'presenter_avatar_path',
-        'art_type',
+        'genre',
         'starts_at',
         'duration_minutes',
         'capacity',
@@ -42,7 +43,7 @@ class Workshop extends Model
 
     public function registrations(): HasMany
     {
-        return $this->hasMany(WorkshopRegistration::class);
+        return $this->hasMany(LiteratureWorkshopRegistration::class);
     }
 
     public function registrationsCount(): int
@@ -55,5 +56,5 @@ class Workshop extends Model
         return $this->belongsTo(User::class, 'submitted_by_user_id');
     }
 
-    // Scopes & accessors moved to HasWorkshopCommon trait
+    // Shared scopes & accessor via HasWorkshopCommon
 }

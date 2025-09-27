@@ -31,13 +31,80 @@
                                 class="text-sm text-slate-500 hover:text-slate-700">عودة إلى الورشات</a>
                         </div>
                     @else
-                        <form action="{{ route('workshops.register.store', $workshop) }}" method="POST" class="space-y-6">
-                            @csrf
-                            <div
-                                class="rounded-xl bg-indigo-50 border border-indigo-100 p-4 text-xs text-indigo-700 flex items-center gap-2">
-                                <i class="fa-solid fa-circle-info text-indigo-500"></i>
-                                يجب أن تكون مسجلاً ومعلوماتك (الاسم – البريد – رقم الجوال) محدثة لإكمال التسجيل.
+                        @if(isset($alreadyRegistered) && $alreadyRegistered)
+                            <div class="space-y-6">
+                                <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-6 text-center">
+                                    <div class="flex items-center justify-center gap-2 text-emerald-700 font-semibold text-sm mb-2">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        تم تسجيلك مسبقاً
+                                    </div>
+                                    <p class="text-xs text-emerald-700/80 mb-4">طلب مشاركتك موجود وقيد المراجعة أو المتابعة. لن تحتاج لإعادة الإرسال.</p>
+                                    <a href="{{ route('workshops.index') }}" class="inline-flex items-center gap-2 text-indigo-700 text-xs font-medium">
+                                        <i class="fa-solid fa-arrow-right"></i> العودة إلى قائمة الورشات
+                                    </a>
+                                </div>
                             </div>
+                        @else
+                        @php
+                            $currentRegistrations = $workshop->registrations()->count();
+                            $capacity = $workshop->capacity;
+                            $isFull = $capacity && $currentRegistrations >= $capacity;
+                            $percent = $capacity ? min(100, round(($currentRegistrations / max(1,$capacity)) * 100)) : null;
+                            $barColor = 'bg-emerald-500';
+                            if($percent !== null){
+                                if($percent >= 90){ $barColor = 'bg-rose-500'; }
+                                elseif($percent >= 70){ $barColor = 'bg-amber-500'; }
+                            }
+                        @endphp
+
+                        <div class="space-y-5 mb-8">
+                            @if($capacity)
+                                @php
+                                    $containerClasses = 'rounded-2xl border p-4 ' . ($isFull ? 'border-rose-300 bg-rose-50' : 'border-slate-200 bg-slate-50');
+                                    $titleClasses = 'font-medium ' . ($isFull ? 'text-rose-700' : 'text-slate-700');
+                                @endphp
+                                <div class="{{ $containerClasses }}">
+                                    <div class="flex flex-wrap items-center justify-between gap-3 text-sm">
+                                        <div class="{{ $titleClasses }}">
+                                            السعة: <span class="font-semibold">{{ $currentRegistrations }} / {{ $capacity }}</span>
+                                        </div>
+                                        @if(!$isFull)
+                                            <div class="text-xs text-slate-500">
+                                                تبقى <span class="font-semibold text-indigo-600">{{ $capacity - $currentRegistrations }}</span> مقعد
+                                            </div>
+                                        @else
+                                            <div class="text-xs font-semibold text-rose-600 flex items-center gap-1">
+                                                <i class="fa-solid fa-circle-exclamation"></i> اكتمل العدد
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="mt-3 space-y-1">
+                                        <progress value="{{ $currentRegistrations }}" max="{{ $capacity }}" class="w-full h-2 overflow-hidden rounded bg-white/70 ring-1 ring-slate-200 [accent-color:theme(colors.indigo.600)]"></progress>
+                                        <div class="text-[11px] tracking-tight text-slate-500 text-center">{{ $percent }}%</div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if($isFull)
+                            <div class="rounded-2xl bg-rose-50 border border-rose-200 p-6 text-center space-y-3">
+                                <div class="text-rose-600 font-semibold flex items-center justify-center gap-2 text-sm">
+                                    <i class="fa-solid fa-lock"></i>
+                                    التسجيل مغلق – تم الوصول للحد الأقصى للمشاركين
+                                </div>
+                                <p class="text-xs text-rose-600/80">يمكنك العودة لاحقاً أو متابعة الورشات الأخرى.</p>
+                                <a href="{{ route('workshops.index') }}" class="inline-flex items-center gap-2 text-indigo-700 text-xs font-medium">
+                                    <i class="fa-solid fa-arrow-right"></i> العودة إلى قائمة الورشات
+                                </a>
+                            </div>
+                        @else
+                            <form action="{{ route('workshops.register.store', $workshop) }}" method="POST" class="space-y-6">
+                                @csrf
+                                <div
+                                    class="rounded-xl bg-indigo-50 border border-indigo-100 p-4 text-xs text-indigo-700 flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-info text-indigo-500"></i>
+                                    يجب أن تكون مسجلاً ومعلوماتك (الاسم – البريد – رقم الجوال) محدثة لإكمال التسجيل.
+                                </div>
 
                             <div class="space-y-2">
                                 <label for="name" class="block text-sm font-medium text-indigo-900">الاسم الكامل</label>
@@ -94,11 +161,10 @@
                                 @enderror
                             </div>
 
-                            <button type="submit"
-                                class="w-full rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200">
-                                إرسال طلب المشاركة
-                            </button>
-                        </form>
+                                <button type="submit" class="w-full rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white focus:outline-none focus:ring-4 focus:ring-emerald-200">إرسال طلب المشاركة</button>
+                            </form>
+                        @endif
+                        @endif
                     @endif
                 </div>
 
@@ -144,6 +210,22 @@
                             <li class="flex items-start gap-3">
                                 <i class="fa-solid fa-id-card text-indigo-300 mt-0.5"></i>
                                 <span class="leading-relaxed">{{ Str::limit($workshop->presenter_bio, 180) }}</span>
+                            </li>
+                        @endif
+                        @php
+                            $currentRegistrationsAside = $workshop->registrations()->count();
+                        @endphp
+                        @if($workshop->capacity)
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-users-line text-indigo-300"></i>
+                                <span>
+                                    السعة: {{ $currentRegistrationsAside }} / {{ $workshop->capacity }}
+                                    @if($currentRegistrationsAside >= $workshop->capacity)
+                                        <span class="ml-2 inline-flex items-center gap-1 rounded-full bg-rose-600/20 px-2 py-0.5 text-[10px] font-medium text-rose-200">ممتلئة</span>
+                                    @elseif($workshop->capacity - $currentRegistrationsAside <= 3)
+                                        <span class="ml-2 inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-100">تبقى {{ $workshop->capacity - $currentRegistrationsAside }}</span>
+                                    @endif
+                                </span>
                             </li>
                         @endif
                     </ul>

@@ -2,46 +2,43 @@
     <section class="max-w-6xl mx-auto px-4 py-12">
         <header class="text-center mb-12">
             <span
-                class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium">
-                <i class="fa-solid fa-brush"></i>
-                فعاليات قادمة
+                class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-violet-100 text-violet-700 text-sm font-medium">
+                <i class="fa-solid fa-feather"></i>
+                فعاليات أدبية
             </span>
-            <h1 class="mt-4 text-3xl md:text-4xl font-bold text-indigo-950">ورشات برواز الفنية</h1>
+            <h1 class="mt-4 text-3xl md:text-4xl font-bold text-violet-950">الورشات الأدبية</h1>
             <p class="mt-3 text-slate-600 max-w-2xl mx-auto">
-                اكتشف أجدد الورشات الإبداعية التي يقدمها أفضل الفنانين. اختر ورشتك المفضلة، اطلع على التفاصيل،
-                وسجل مشاركتك بخطوة واحدة.
+                استكشف أحدث الورشات الأدبية والتدريبية في مجالات الكتابة، الشعر، التحرير، والسرد القصصي.
             </p>
         </header>
-
         @if($workshops->isEmpty())
             <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-                <h2 class="text-xl font-semibold text-slate-700">لا توجد ورشات متاحة الآن</h2>
-                <p class="mt-3 text-slate-500">تابعنا قريبًا لمعرفة الورشات الجديدة التي سيضيفها فريقنا.</p>
+                <h2 class="text-xl font-semibold text-slate-700">لا توجد ورشات أدبية حالياً</h2>
+                <p class="mt-3 text-slate-500">تابع لاحقاً لمزيد من الفعاليات الأدبية.</p>
             </div>
         @else
             <div class="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+                @php
+                    $userRegisteredLookup = isset($userRegisteredIds) ? array_flip($userRegisteredIds) : [];
+                @endphp
                 @foreach($workshops as $workshop)
                     @php
                         $soon = $workshop->starts_at->isFuture() && $workshop->starts_at->diffInDays() <= 30;
-                        $coverRaw = $workshop->cover_image_path;
-                        // Fallback now uses an existing image (rec1.jpg) to avoid 404 for placeholder-wide.jpg
-                        $coverUrl = $coverRaw
-                            ? (preg_match('/^https?:/i', $coverRaw) ? $coverRaw : asset('storage/' . ltrim($coverRaw, '/')))
-                            : asset('imgs/pic/rec1.jpg');
                         $avatarRaw = $workshop->presenter_avatar_path;
-                        $avatarUrl = $avatarRaw
-                            ? (preg_match('/^https?:/i', $avatarRaw) ? $avatarRaw : asset('storage/' . ltrim($avatarRaw, '/')))
-                            : null;
-                        $isRegistered = auth()->check() && $workshop->registrations()->where('user_id', auth()->id())->exists();
+                        $avatarUrl = $avatarRaw ? (preg_match('/^https?:/i', $avatarRaw) ? $avatarRaw : asset('storage/' . ltrim($avatarRaw, '/'))) : null;
+                        $isRegistered = isset($userRegisteredLookup[$workshop->id]);
                         $capacity = $workshop->capacity;
-                        $count = $workshop->registrations()->count();
+                        $count = $workshop->registrations_count ?? 0;
                         $full = $capacity && $count >= $capacity;
                     @endphp
                     <article
                         class="group flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-md ring-1 ring-slate-100 transition hover:shadow-xl @if($isRegistered) border border-emerald-300 ring-emerald-200/70 bg-gradient-to-b from-emerald-50 to-white @endif">
-                        <div class="relative h-56 w-full overflow-hidden">
-                            <img src="{{ $coverUrl }}" alt="{{ $workshop->title }}"
-                                class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+                        <div
+                            class="relative h-48 w-full overflow-hidden bg-gradient-to-br from-violet-200 via-fuchsia-200 to-pink-200 flex items-center justify-center">
+                            <div
+                                class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white,transparent_70%)]">
+                            </div>
+                            <i class="fa-solid fa-feather text-violet-600 text-5xl"></i>
                             @if($soon)
                                 <span
                                     class="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-amber-500/95 px-3 py-1 text-xs font-medium text-white shadow-sm">
@@ -60,7 +57,7 @@
                                 </span>
                             @endif
                             @if($avatarUrl)
-                                <div class="absolute -bottom-5 inset-x-0 flex justify-center">
+                                <div class="absolute -bottom-6 inset-x-0 flex justify-center">
                                     <img src="{{ $avatarUrl }}" alt="{{ $workshop->presenter_name }}"
                                         class="h-16 w-16 rounded-xl object-cover ring-4 ring-white shadow-md" loading="lazy">
                                 </div>
@@ -88,12 +85,12 @@
                                 <hr class="border-slate-200">
                                 <div class="grid grid-cols-2 gap-4 text-center text-sm">
                                     <div class="space-y-1">
-                                        <div class="text-[11px] font-medium tracking-wide text-slate-400">سعر الدورة</div>
+                                        <div class="text-[11px] font-medium tracking-wide text-slate-400">سعر المشاركة</div>
                                         <div class="font-bold text-emerald-600">مجاناً</div>
                                     </div>
                                     <div class="space-y-1">
-                                        <div class="text-[11px] font-medium tracking-wide text-slate-400">التخصص</div>
-                                        <div class="font-semibold text-slate-700">{{ $workshop->art_type ?? 'متنوع' }}</div>
+                                        <div class="text-[11px] font-medium tracking-wide text-slate-400">التصنيف</div>
+                                        <div class="font-semibold text-slate-700">{{ $workshop->genre ?? 'عام' }}</div>
                                     </div>
                                 </div>
                                 <div class="pt-3">
@@ -102,8 +99,8 @@
                                             class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700">المزيد
                                             <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i></a>
                                     @else
-                                        <a href="{{ route('workshops.register', $workshop) }}"
-                                            class="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700">المزيد
+                                        <a href="{{ route('literature_workshops.register', $workshop) }}"
+                                            class="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-violet-700">المزيد
                                             <i class="fa-solid fa-arrow-left text-xs"></i></a>
                                     @endif
                                 </div>
