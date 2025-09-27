@@ -43,6 +43,11 @@ class Workshop extends Model
         return $this->hasMany(WorkshopRegistration::class);
     }
 
+    public function registrationsCount(): int
+    {
+        return $this->registrations()->count();
+    }
+
     public function submitter()
     {
         return $this->belongsTo(User::class, 'submitted_by_user_id');

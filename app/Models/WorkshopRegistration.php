@@ -16,6 +16,7 @@ class WorkshopRegistration extends Model
         'name',
         'email',
         'phone',
+        'whatsapp_phone',
         'notes',
     ];
 

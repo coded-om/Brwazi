@@ -33,6 +33,11 @@
                     @else
                         <form action="{{ route('workshops.register.store', $workshop) }}" method="POST" class="space-y-6">
                             @csrf
+                            <div
+                                class="rounded-xl bg-indigo-50 border border-indigo-100 p-4 text-xs text-indigo-700 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-indigo-500"></i>
+                                يجب أن تكون مسجلاً ومعلوماتك (الاسم – البريد – رقم الجوال) محدثة لإكمال التسجيل.
+                            </div>
 
                             <div class="space-y-2">
                                 <label for="name" class="block text-sm font-medium text-indigo-900">الاسم الكامل</label>
@@ -57,13 +62,23 @@
                             </div>
 
                             <div class="space-y-2">
-                                <label for="phone" class="block text-sm font-medium text-indigo-900">رقم التواصل
-                                    (اختياري)</label>
+                                <label for="phone" class="block text-sm font-medium text-indigo-900">رقم الجوال *</label>
                                 <input id="phone" name="phone" type="text"
                                     value="{{ old('phone', $prefill['phone'] ?? '') }}"
                                     class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                                    placeholder="05xxxxxxxx">
+                                    placeholder="05xxxxxxxx" required>
                                 @error('phone')
+                                    <p class="text-xs text-rose-500">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="space-y-2">
+                                <label for="whatsapp_phone" class="block text-sm font-medium text-indigo-900">رقم واتساب
+                                    (اختياري)</label>
+                                <input id="whatsapp_phone" name="whatsapp_phone" type="text"
+                                    value="{{ old('whatsapp_phone') }}"
+                                    class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                                    placeholder="05xxxxxxxx">
+                                @error('whatsapp_phone')
                                     <p class="text-xs text-rose-500">{{ $message }}</p>
                                 @enderror
                             </div>

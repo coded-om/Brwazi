@@ -3,12 +3,13 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreWorkshopRegistrationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     public function rules(): array
@@ -16,7 +17,8 @@ class StoreWorkshopRegistrationRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:50'],
+            'phone' => ['required', 'string', 'max:50'],
+            'whatsapp_phone' => ['nullable', 'string', 'max:50'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -27,6 +29,7 @@ class StoreWorkshopRegistrationRequest extends FormRequest
             'name.required' => 'الاسم مطلوب للتسجيل.',
             'email.required' => 'البريد الإلكتروني مطلوب للتسجيل.',
             'email.email' => 'يرجى إدخال بريد إلكتروني صالح.',
+            'phone.required' => 'رقم الجوال مطلوب.',
         ];
     }
 }

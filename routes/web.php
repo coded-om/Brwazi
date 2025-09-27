@@ -35,8 +35,10 @@ Route::get('/art-brwaz/exhibit', function () {
 
 // Workshops
 Route::get('/workshops', [WorkshopController::class, 'index'])->name('workshops.index');
-Route::get('/workshops/{workshop:slug}/register', [WorkshopController::class, 'showRegistrationForm'])->name('workshops.register');
-Route::post('/workshops/{workshop:slug}/register', [WorkshopController::class, 'storeRegistration'])->name('workshops.register.store');
+Route::middleware(['auth', 'not.banned'])->group(function () {
+    Route::get('/workshops/{workshop:slug}/register', [WorkshopController::class, 'showRegistrationForm'])->name('workshops.register');
+    Route::post('/workshops/{workshop:slug}/register', [WorkshopController::class, 'storeRegistration'])->name('workshops.register.store');
+});
 // User submission (verified users)
 Route::middleware(['auth', 'not.banned'])->group(function () {
     Route::get('/workshops/submit/new', [\App\Http\Controllers\UserWorkshopSubmissionController::class, 'create'])->name('workshops.submit.create');

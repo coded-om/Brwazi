@@ -43,6 +43,7 @@ class WorkshopController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
+            'whatsapp_phone' => $data['whatsapp_phone'] ?? null,
             'notes' => $data['notes'] ?? null,
         ]);
 

@@ -57,37 +57,36 @@ class WorkshopResource extends Resource
             Forms\Components\Toggle::make('is_approved')->label('موافَق عليه')->default(false),
             Forms\Components\Select::make('submitted_by_user_id')->relationship('submitter', 'email')->label('مقدم بواسطة (مستخدم)')->searchable()->preload(),
         ])
-        ->columns(2)
-        ->afterStateHydrated(function () {})
-        ->model(Workshop::class)
-        ->saveRelationshipsUsing(function ($record, $form) {
-            // process raw images if present
-            $imageService = app(\App\Services\ImageService::class);
-            $dirty = false;
-            if ($record->cover_image_path && str_contains($record->cover_image_path, '/raw/')) {
-                $rawPath = $record->cover_image_path; // storage path relative
-                $full = storage_path('app/public/' . $rawPath);
-                if (is_file($full)) {
-                    $uploaded = new \Illuminate\Http\UploadedFile($full, basename($full));
-                    $processed = $imageService->coverWideWebp($uploaded, 1280, 'workshops/covers');
-                    $record->cover_image_path = $processed['path'];
-                    $dirty = true;
+            ->columns(2)
+            ->model(Workshop::class)
+            ->saveRelationshipsUsing(function ($record, $form) {
+                // process raw images if present
+                $imageService = app(\App\Services\ImageService::class);
+                $dirty = false;
+                if ($record->cover_image_path && str_contains($record->cover_image_path, '/raw/')) {
+                    $rawPath = $record->cover_image_path; // storage path relative
+                    $full = storage_path('app/public/' . $rawPath);
+                    if (is_file($full)) {
+                        $uploaded = new \Illuminate\Http\UploadedFile($full, basename($full));
+                        $processed = $imageService->coverWideWebp($uploaded, 1280, 'workshops/covers');
+                        $record->cover_image_path = $processed['path'];
+                        $dirty = true;
+                    }
                 }
-            }
-            if ($record->presenter_avatar_path && str_contains($record->presenter_avatar_path, '/raw/')) {
-                $rawPath = $record->presenter_avatar_path;
-                $full = storage_path('app/public/' . $rawPath);
-                if (is_file($full)) {
-                    $uploaded = new \Illuminate\Http\UploadedFile($full, basename($full));
-                    $processed = $imageService->uploadAndCrop($uploaded, 'workshops/presenters', 400, 400);
-                    $record->presenter_avatar_path = $processed['path'];
-                    $dirty = true;
+                if ($record->presenter_avatar_path && str_contains($record->presenter_avatar_path, '/raw/')) {
+                    $rawPath = $record->presenter_avatar_path;
+                    $full = storage_path('app/public/' . $rawPath);
+                    if (is_file($full)) {
+                        $uploaded = new \Illuminate\Http\UploadedFile($full, basename($full));
+                        $processed = $imageService->uploadAndCrop($uploaded, 'workshops/presenters', 400, 400);
+                        $record->presenter_avatar_path = $processed['path'];
+                        $dirty = true;
+                    }
                 }
-            }
-            if ($dirty) {
-                $record->save();
-            }
-        });
+                if ($dirty) {
+                    $record->save();
+                }
+            });
     }
 
     public static function table(Table $table): Table
@@ -115,12 +114,14 @@ class WorkshopResource extends Resource
                         ->icon('heroicon-o-check')
                         ->visible(fn(Workshop $record) => !$record->is_approved)
                         ->action(function (Workshop $record) {
-                            $record->update(['is_approved' => true]); }),
+                            $record->update(['is_approved' => true]);
+                        }),
                     Tables\Actions\Action::make('publish')
                         ->label('نشر/إلغاء')
                         ->icon('heroicon-o-eye')
                         ->action(function (Workshop $record) {
-                            $record->update(['is_published' => !$record->is_published]); }),
+                            $record->update(['is_published' => !$record->is_published]);
+                        }),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ])->bulkActions([
@@ -136,6 +137,13 @@ class WorkshopResource extends Resource
             'index' => Pages\ListWorkshops::route('/'),
             'create' => Pages\CreateWorkshop::route('/create'),
             'edit' => Pages\EditWorkshop::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            \App\Filament\Resources\WorkshopResource\RelationManagers\RegistrationsRelationManager::class,
         ];
     }
 }

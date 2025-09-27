@@ -26,7 +26,7 @@
                         $coverRaw = $workshop->cover_image_path;
                         // Fallback now uses an existing image (rec1.jpg) to avoid 404 for placeholder-wide.jpg
                         $coverUrl = $coverRaw
-                            ? (preg_match('/^https?:/i', $coverRaw) ? $coverRaw : asset('storage/' . ltrim($coverRaw,'/')))
+                            ? (preg_match('/^https?:/i', $coverRaw) ? $coverRaw : asset('storage/' . ltrim($coverRaw, '/')))
                             : asset('imgs/pic/rec1.jpg');
                         $avatarRaw = $workshop->presenter_avatar_path;
                         $avatarUrl = $avatarRaw
