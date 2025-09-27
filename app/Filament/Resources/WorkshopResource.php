@@ -47,7 +47,14 @@ class WorkshopResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\ImageColumn::make('cover_image_path')->label('غلاف')->getStateUsing(fn($r) => $r->cover_image_path ? asset('storage/' . ltrim($r->cover_image_path, '/')) : null)->square(),
+            Tables\Columns\ImageColumn::make('cover_image_path')
+                ->label('غلاف')
+                ->getStateUsing(function (Workshop $record) {
+                    return $record->cover_image_path
+                        ? asset('storage/' . ltrim($record->cover_image_path, '/'))
+                        : null;
+                })
+                ->square(),
             Tables\Columns\TextColumn::make('title')->label('العنوان')->searchable()->sortable(),
             Tables\Columns\TextColumn::make('presenter_name')->label('المقدم')->searchable(),
             Tables\Columns\IconColumn::make('is_approved')->label('موافقة')->boolean(),
