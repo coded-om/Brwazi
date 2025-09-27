@@ -288,4 +288,29 @@ class ImageService
         Storage::disk('public')->put($path, $bytes);
         return ['path' => $path, 'url' => asset('storage/' . $path), 'width' => $width, 'height' => $height];
     }
+
+    /**
+     * قص وتوليد غلاف بنسبة 16:9 (cover موحّد للورشات) وتحويله إلى WebP
+     */
+    public function coverWideWebp(UploadedFile $file, int $targetWidth = 1280, string $directory = 'workshops/covers', int $quality = 82): array
+    {
+        $targetHeight = (int) round($targetWidth * 9 / 16); // 16:9 aspect
+        $image = $this->readOriented($file);
+
+        // قص بنسبة 16:9 centred
+        $image = $image->cover($targetWidth, $targetHeight);
+
+        $bytes = $this->encodeWebp($image, $quality);
+        $filename = Str::uuid()->toString() . '.webp';
+        $path = rtrim($directory, '/') . '/' . $filename;
+        Storage::disk('public')->put($path, $bytes);
+
+        return [
+            'path' => $path,
+            'url' => asset('storage/' . $path),
+            'width' => $targetWidth,
+            'height' => $targetHeight,
+            'aspect' => '16:9'
+        ];
+    }
 }

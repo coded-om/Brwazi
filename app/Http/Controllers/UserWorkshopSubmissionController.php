@@ -29,12 +29,16 @@ class UserWorkshopSubmissionController extends Controller
 
         $coverPath = null;
         if ($request->hasFile('cover_image')) {
-            $coverPath = $request->file('cover_image')->store('workshops/covers', 'public');
+            $imageService = app(\App\Services\ImageService::class);
+            $coverProcessed = $imageService->coverWideWebp($request->file('cover_image'), 1280, 'workshops/covers');
+            $coverPath = $coverProcessed['path'];
         }
 
         $presenterAvatar = null;
         if ($request->hasFile('presenter_avatar')) {
-            $presenterAvatar = $request->file('presenter_avatar')->store('workshops/presenters', 'public');
+            $imageService = $imageService ?? app(\App\Services\ImageService::class);
+            $avatarProcessed = $imageService->uploadAndCrop($request->file('presenter_avatar'), 'workshops/presenters', 400, 400);
+            $presenterAvatar = $avatarProcessed['path'];
         }
 
         Workshop::create([
