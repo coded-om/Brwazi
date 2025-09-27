@@ -35,6 +35,15 @@
                                 الاعمال الادبية
                             </a>
                         </li>
+                        <li class="rounded-md px-2 py-1 transition-all duration-200 {{ $isActive(['workshops', 'workshops*']) ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
+                            <a href="{{ route('workshops.index') }}"
+                               class="cursor-pointer flex gap-1 items-center justify-center leading-none font-normal {{ $isActive('workshops*') ? 'text-white' : 'hover:text-white' }}"
+                               {{ $isActive('workshops*') ? 'aria-current="page"' : '' }}>
+                                <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات بروزاي"
+                                     class="w-6 h-6 icon-white flex-shrink-0" loading="lazy" decoding="async">
+                                ورشات بروزاي
+                            </a>
+                        </li>
                         <li class="rounded-md px-2 py-1 transition-all duration-200 {{ $isActive('art-brwaz*') ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
                             <a href="{{ route('artbrwaz.index') }}" class="cursor-pointer flex gap-1 items-center justify-center leading-none {{ $isActive('art-brwaz*') ? 'text-white' : 'hover:text-white' }}"
                                 {{ $isActive('art-brwaz*') ? 'aria-current="page"' : '' }}>
@@ -164,6 +173,14 @@
                                 {{ $isActive('art-brwaz*') ? 'aria-current="page"' : '' }}>
                                 <img src="{{ $isActive(patterns: 'art-brwaz*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="معرض برواز"
                                     class="w-5 h-5 icon-white" loading="lazy" decoding="async">
+                            </a>
+                        </li>
+                        <li class="rounded-md px-1.5 py-1 transition-all duration-200 {{ $isActive(['workshops', 'workshops*']) ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
+                            <a href="{{ route('workshops.index') }}"
+                               class="cursor-pointer flex items-center justify-center text-white"
+                               {{ $isActive('workshops*') ? 'aria-current="page"' : '' }}>
+                                <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات بروزاي"
+                                     class="w-5 h-5 icon-white" loading="lazy" decoding="async">
                             </a>
                         </li>
                         <li class="rounded-md px-1.5 py-1 transition-all duration-200 {{ $isActive('mazad') ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
@@ -342,6 +359,13 @@
                         <img src="{{ $isActive(patterns: 'art') ? asset('imgs/icons-color/eye-category.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="الاعمال الفنية"
                             class="w-6 h-6 icon-white" loading="lazy" decoding="async">
                         <span>الاعمال الفنية</span>
+                    </a>
+                    <a href="{{ route('workshops.index') }}"
+                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive(['workshops', 'workshops*']) ? 'bg-white/10' : '' }}"
+                        {{ $isActive(['workshops', 'workshops*']) ? 'aria-current="page"' : '' }}>
+                        <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات بروزاي"
+                            class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                        <span>ورشات بروزاي</span>
                     </a>
                     <a href="/literary"
                         class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('literary*') ? 'bg-white/10' : '' }}"

@@ -14,6 +14,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\DisputeController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\WorkshopController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,11 @@ Route::get('/art-brwaz', function () {
 Route::get('/art-brwaz/exhibit', function () {
     return view('artBrwaz.exhibit');
 })->name('artbrwaz.exhibit');
+
+// Workshops
+Route::get('/workshops', [WorkshopController::class, 'index'])->name('workshops.index');
+Route::get('/workshops/{workshop:slug}/register', [WorkshopController::class, 'showRegistrationForm'])->name('workshops.register');
+Route::post('/workshops/{workshop:slug}/register', [WorkshopController::class, 'storeRegistration'])->name('workshops.register.store');
 
 // Artists directory (public)
 Route::get('/artists', [ArtistController::class, 'index'])->name('artists.index');
