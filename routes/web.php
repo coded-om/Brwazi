@@ -16,6 +16,7 @@ use App\Http\Controllers\DisputeController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\LiteratureWorkshopController;
+use App\Http\Controllers\ExhibitionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,10 @@ Route::get('/art-brwaz', function () {
 Route::get('/art-brwaz/exhibit', function () {
     return view('artBrwaz.exhibit');
 })->name('artbrwaz.exhibit');
+
+// Exhibitions (Physical / Map based)
+Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index');
+Route::get('/exhibitions/{exhibition:slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');
 
 // Workshops
 Route::get('/workshops', [WorkshopController::class, 'index'])->name('workshops.index');

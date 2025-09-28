@@ -70,5 +70,6 @@ coverage
 public/css/*.map
 public/js/*.map
 
-# Ignore user-generated media (if manually placed in public/imgs/uploads)
-public/imgs/uploads
+# Previously ignored user-generated media. Commented out to allow committing images.
+# public/imgs/uploads
+# If you want to re-ignore uploads later, uncomment the line above.

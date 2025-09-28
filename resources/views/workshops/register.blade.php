@@ -161,7 +161,7 @@
                                 @enderror
                             </div>
 
-                                <button type="submit" class="w-full rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white focus:outline-none focus:ring-4 focus:ring-emerald-200">إرسال طلب المشاركة</button>
+                                <button type="submit" class="w-full rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-green focus:outline-none focus:ring-4 focus:ring-emerald-200">إرسال طلب المشاركة</button>
                             </form>
                         @endif
                         @endif

@@ -17,14 +17,32 @@
                 </a>
                 <div class="p-1 bg-white/10 rounded-xl  w">
                     <ul class="flex gap-2.5">
-                        <li class="rounded-md px-2 py-1 transition-all duration-200 {{ $isActive('art') ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
+                        <!-- Art (dropdown with Workshops + Exhibitions) -->
+                        <li class="relative group rounded-md px-2 py-1 transition-all duration-200 {{ $isActive(['art','workshops*','exhibitions*']) ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
                             <a href="/art"
-                                class="cursor-pointer flex gap-1 items-center justify-center leading-none {{ $isActive('art') ? 'text-white' : 'hover:text-white' }}"
-                                {{ $isActive('art') ? 'aria-current="page"' : '' }}>
-                                <img src="{{ $isActive(patterns: 'art') ? asset('imgs/icons-color/eye-category.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="الاعمال الفنية"
-                                    class="w-6 h-6 icon-white flex-shrink-0" loading="lazy" decoding="async">
+                               class="cursor-pointer flex items-center justify-center gap-1 leading-none font-normal {{ $isActive(['art','workshops*','exhibitions*']) ? 'text-white' : 'hover:text-white' }}"
+                               {{ $isActive(['art','workshops*','exhibitions*']) ? 'aria-current="page"' : '' }} aria-haspopup="true" aria-expanded="{{ $isActive(['workshops*','exhibitions*']) ? 'true':'false' }}">
+                                <img src="{{ $isActive(patterns: ['art','workshops*','exhibitions*']) ? asset('imgs/icons-color/eye-category.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="الاعمال الفنية"
+                                     class="w-6 h-6 icon-white flex-shrink-0" loading="lazy" decoding="async">
                                 الاعمال الفنية
+                                <svg class="w-3 h-3 ms-1 text-white/80 transition-transform duration-200 group-hover:rotate-180 {{ $isActive(['workshops*','exhibitions*']) ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                             </a>
+                            <div class="absolute top-full right-0 mt-2 w-56 bg-[#141640] border border-white/10 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <ul class="py-2 text-sm">
+                                    <li>
+                                        <a href="{{ route('workshops.index') }}" class="flex gap-2 items-center px-3 py-2 rounded-md transition-colors duration-150 {{ $isActive('workshops*') ? 'bg-[#9B4F9F] text-white' : 'text-white/90 hover:bg-[#9B4F9F] hover:text-white' }}" {{ $isActive('workshops*') ? 'aria-current=\"page\"' : '' }}>
+                                            <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات الفنية" class="w-5 h-5 icon-white flex-shrink-0" loading="lazy" decoding="async">
+                                            ورشات الفنية
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('exhibitions.index') }}" class="flex gap-2 items-center px-3 py-2 rounded-md transition-colors duration-150 {{ $isActive('exhibitions*') ? 'bg-[#9B4F9F] text-white' : 'text-white/90 hover:bg-[#9B4F9F] hover:text-white' }}" {{ $isActive('exhibitions*') ? 'aria-current=\"page\"' : '' }}>
+                                            <img src="{{ $isActive(patterns: 'exhibitions*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="المعارض" class="w-5 h-5 icon-white flex-shrink-0" loading="lazy" decoding="async">
+                                            المعارض
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                         <!-- Literary (with dropdown for Literature Workshops) -->
                         <li class="relative group rounded-md px-2 py-1 transition-all duration-200 {{ $isActive(['literary*','literature-workshops*']) ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
@@ -47,15 +65,7 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="rounded-md px-2 py-1 transition-all duration-200 {{ $isActive(['workshops', 'workshops*']) ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
-                            <a href="{{ route('workshops.index') }}"
-                               class="cursor-pointer flex gap-1 items-center justify-center leading-none font-normal {{ $isActive('workshops*') ? 'text-white' : 'hover:text-white' }}"
-                               {{ $isActive('workshops*') ? 'aria-current="page"' : '' }}>
-                                <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات بروزاي"
-                                     class="w-6 h-6 icon-white flex-shrink-0" loading="lazy" decoding="async">
-                                ورشات الفنية
-                            </a>
-                        </li>
+                        <!-- (Standalone workshops item removed; now in Art dropdown) -->
                         <li class="rounded-md px-2 py-1 transition-all duration-200 {{ $isActive('art-brwaz*') ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
                             <a href="{{ route('artbrwaz.index') }}" class="cursor-pointer flex gap-1 items-center justify-center leading-none {{ $isActive('art-brwaz*') ? 'text-white' : 'hover:text-white' }}"
                                 {{ $isActive('art-brwaz*') ? 'aria-current="page"' : '' }}>
@@ -172,7 +182,6 @@
                                aria-haspopup="true" aria-expanded="{{ $isActive('workshops*') ? 'true' : 'false' }}">
                                 <img src="{{ $isActive(patterns: ['art','workshops*']) ? asset('imgs/icons-color/eye-category.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="الاعمال الفنية"
                                      class="w-6 h-6 icon-white flex-shrink-0" loading="lazy" decoding="async">
-                                الاعمال الفنية
                                 <svg class="w-3 h-3 ms-1 text-white/80 transition-transform duration-200 group-hover:rotate-180 {{ $isActive('workshops*') ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                             </a>
                             <!-- Dropdown -->
@@ -185,6 +194,14 @@
                                             <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات بروزاي"
                                                  class="w-5 h-5 icon-white flex-shrink-0" loading="lazy" decoding="async">
                                             ورشات الفنية
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('artbrwaz.index') }}"
+                                           class="flex gap-2 items-center px-3 py-2 rounded-md transition-colors duration-150 {{ $isActive('art-brwaz*') ? 'bg-[#9B4F9F] text-white' : 'text-white/90 hover:bg-[#9B4F9F] hover:text-white' }}"
+                                           {{ $isActive('art-brwaz*') ? 'aria-current="page"' : '' }}>
+                                            <img src="{{ $isActive(patterns: 'art-brwaz*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="معرض برواز" class="w-5 h-5 icon-white flex-shrink-0" loading="lazy" decoding="async">
+                                            معرض برواز
                                         </a>
                                     </li>
                                 </ul>
@@ -201,6 +218,13 @@
                             <a href="{{ route('artbrwaz.index') }}" class="cursor-pointer flex items-center justify-center text-white"
                                 {{ $isActive('art-brwaz*') ? 'aria-current="page"' : '' }}>
                                 <img src="{{ $isActive(patterns: 'art-brwaz*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="معرض برواز"
+                                    class="w-5 h-5 icon-white" loading="lazy" decoding="async">
+                            </a>
+                        </li>
+                        <li class="rounded-md px-1.5 py-1 transition-all duration-200 {{ $isActive('exhibitions*') ? 'bg-[#9B4F9F]' : 'hover:bg-[#9B4F9F]' }}">
+                            <a href="{{ route('exhibitions.index') }}" class="cursor-pointer flex items-center justify-center text-white"
+                                {{ $isActive('exhibitions*') ? 'aria-current="page"' : '' }}>
+                                <img src="{{ $isActive(patterns: 'exhibitions*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="المعارض"
                                     class="w-5 h-5 icon-white" loading="lazy" decoding="async">
                             </a>
                         </li>
@@ -373,40 +397,57 @@
             <!-- Mobile Menu Content -->
             <div class="flex-1 overflow-y-auto p-4 min-h-0">
                 <!-- Categories -->
-                <div class="space-y-2 mb-6">
-                    <a href="/art"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('art') ? 'bg-white/10' : '' }}"
-                        {{ $isActive('art') ? 'aria-current="page"' : '' }}>
-                        <img src="{{ $isActive(patterns: 'art') ? asset('imgs/icons-color/eye-category.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="الاعمال الفنية"
-                            class="w-6 h-6 icon-white" loading="lazy" decoding="async">
-                        <span>الاعمال الفنية</span>
-                    </a>
-                    <a href="{{ route('workshops.index') }}"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive(['workshops', 'workshops*']) ? 'bg-white/10' : '' }}"
-                        {{ $isActive(['workshops', 'workshops*']) ? 'aria-current="page"' : '' }}>
-                        <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات بروزاي"
-                            class="w-6 h-6 icon-white" loading="lazy" decoding="async">
-                        <span>ورشات بروزاي</span>
-                    </a>
-                    <a href="/literary"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('literary*') ? 'bg-white/10' : '' }}"
-                        {{ $isActive('literary*') ? 'aria-current="page"' : '' }}>
-                        <img src="{{ $isActive(patterns: 'literary*') ? asset('imgs/icons-color/peper-category.svg') : asset('imgs/icons-no-colors/peper-category.svg') }}" alt="الاعمال الادبية"
-                            class="w-6 h-6 icon-white" loading="lazy" decoding="async">
-                        <span>الاعمال الادبية</span>
-                    </a>
+                <div class="space-y-2 mb-6" x-data="{ openArt: {{ $isActive(['workshops*','exhibitions*']) ? 'true':'false' }}, openLiterary: {{ $isActive('literature-workshops*') ? 'true':'false' }} }">
+                    <!-- Art parent -->
+                    <button @click="openArt=!openArt" :aria-expanded="openArt.toString()"
+                        class="w-full flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive(['art','workshops*','exhibitions*']) ? 'bg-white/10' : '' }}">
+                        <span class="flex items-center gap-3">
+                            <img src="{{ $isActive(patterns: ['art','workshops*','exhibitions*']) ? asset('imgs/icons-color/eye-category.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="الاعمال الفنية" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                            <span>الاعمال الفنية</span>
+                        </span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="openArt ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div x-show="openArt" x-transition.opacity x-collapse class="ms-8 space-y-1">
+                        <a href="{{ route('workshops.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('workshops*') ? 'bg-white/10' : '' }}" {{ $isActive('workshops*') ? 'aria-current="page"' : '' }}>
+                            <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات الفنية" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
+                            <span>ورشات الفنية</span>
+                        </a>
+                        <a href="{{ route('exhibitions.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('exhibitions*') ? 'bg-white/10' : '' }}" {{ $isActive('exhibitions*') ? 'aria-current="page"' : '' }}>
+                            <img src="{{ $isActive(patterns: 'exhibitions*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="المعارض" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
+                            <span>المعارض</span>
+                        </a>
+                    </div>
+
+                    <!-- Literary parent -->
+                    <button @click="openLiterary=!openLiterary" :aria-expanded="openLiterary.toString()"
+                        class="w-full flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive(['literary*','literature-workshops*']) ? 'bg-white/10' : '' }}">
+                        <span class="flex items-center gap-3">
+                            <img src="{{ $isActive(patterns: ['literary*','literature-workshops*']) ? asset('imgs/icons-color/peper-category.svg') : asset('imgs/icons-no-colors/peper-category.svg') }}" alt="الاعمال الادبية" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                            <span>الاعمال الادبية</span>
+                        </span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="openLiterary ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div x-show="openLiterary" x-transition.opacity x-collapse class="ms-8 space-y-1">
+                        <a href="/literary" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('literary') ? 'bg-white/10' : '' }}" {{ $isActive('literary') ? 'aria-current="page"' : '' }}>
+                            <img src="{{ $isActive(patterns: 'literary') ? asset('imgs/icons-color/peper-category.svg') : asset('imgs/icons-no-colors/peper-category.svg') }}" alt="الاعمال الادبية" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
+                            <span>الرئيسية الأدبية</span>
+                        </a>
+                        <a href="{{ route('literature_workshops.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('literature-workshops*') ? 'bg-white/10' : '' }}" {{ $isActive('literature-workshops*') ? 'aria-current="page"' : '' }}>
+                            <i class="fa-solid fa-feather text-xs"></i>
+                            <span>ورشات أدبية</span>
+                        </a>
+                    </div>
+
+                    <!-- Art Brwaz -->
                     <a href="{{ route('artbrwaz.index') }}"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('art-brwaz*') ? 'bg-white/10' : '' }}"
-                        {{ $isActive('art-brwaz*') ? 'aria-current="page"' : '' }}>
-                        <img src="{{ $isActive(patterns: 'art-brwaz*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="معرض برواز"
-                            class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('art-brwaz*') ? 'bg-white/10' : '' }}" {{ $isActive('art-brwaz*') ? 'aria-current=\"page\"' : '' }}>
+                        <img src="{{ $isActive(patterns: 'art-brwaz*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="معرض برواز" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
                         <span>معرض برواز</span>
                     </a>
+                    <!-- Mazad -->
                     <a href="/mazad"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('mazad') ? 'bg-white/10' : '' }}"
-                        {{ $isActive('mazad') ? 'aria-current="page"' : '' }}>
-                        <img src="{{ $isActive(patterns: 'mazad*') ? asset('imgs/icons-color/mazad.svg') : asset('imgs/icons-no-colors/mazad-category.svg') }}" alt="المزاد الفني"
-                            class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('mazad') ? 'bg-white/10' : '' }}" {{ $isActive('mazad') ? 'aria-current=\"page\"' : '' }}>
+                        <img src="{{ $isActive(patterns: 'mazad*') ? asset('imgs/icons-color/mazad.svg') : asset('imgs/icons-no-colors/mazad-category.svg') }}" alt="المزاد الفني" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
                         <span>المزاد الفني</span>
                     </a>
                 </div>

@@ -21,9 +21,23 @@ if (!function_exists('asset_url')) {
         if (Str::startsWith($p, ['storage/', '/storage/'])) {
             return asset(ltrim($p, '/'));
         }
-        // Heuristic: if it contains a directory we uploaded to (settings/...), it's on public disk
-        if (Str::startsWith($p, ['settings/', '/settings/'])) {
-            return asset('storage/' . ltrim($p, '/'));
+        // Heuristics for directories saved via FileUpload to the public disk (need /storage/ prefix when generating URL)
+        $publicDiskDirs = [
+            'settings/',
+            '/settings/',
+            'books/covers',
+            '/books/covers',
+            'books/images',
+            '/books/images',
+            'workshops/',
+            '/workshops/',
+            'literature_workshops/',
+            '/literature_workshops/',
+        ];
+        foreach ($publicDiskDirs as $dir) {
+            if (Str::startsWith($p, $dir)) {
+                return asset('storage/' . ltrim($p, '/'));
+            }
         }
         return asset(ltrim($p, '/'));
     }
