@@ -1,72 +1,270 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Brwazi Logo](public/imgs/logo.svg)
 
-## About Laravel
+# Brwazi Platform
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+منصّة فنية / أدبية / معارض تفاعلية – إدارة، عرض، مزادات، وورش عمل.
 
--   [Simple, fast routing engine](https://laravel.com/docs/routing).
--   [Powerful dependency injection container](https://laravel.com/docs/container).
--   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
--   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
--   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
--   [Robust background job processing](https://laravel.com/docs/queues).
--   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**English summary below.**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+</div>
 
-## Learning Laravel
+## 📌 المحتوى
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. [وصف المشروع](#-وصف-المشروع)
+2. [المزايا الرئيسية](#-المزايا-الرئيسية)
+3. [المخطط العام للتقنيات](#-التقنيات)
+4. [التجهيز السريع (Quick Start)](#-التجهيز-السريع)
+5. [إعداد ملف البيئة .env](#-إعداد-البيئة-env)
+6. [بناء الواجهة الأمامية](#-الواجهة-الأمامية)
+7. [إدارة الصور وملف .gitignore](#-الصور)
+8. [المعارض (Exhibitions) وواجهة JSON](#-المعارض-exhibitions)
+9. [هيكل المجلدات المختصر](#-هيكل-المجلدات)
+10. [الاختبارات](#-الاختبارات)
+11. [الأمان](#-الأمان)
+12. [المساهمة](#-المساهمة)
+13. [الترخيص](#-الترخيص)
+14. [English Summary](#-english-summary)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🖼 وصف المشروع
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Brwazi منصة متعددة الأقسام لإدارة وعرض:
 
-## Laravel Sponsors
+-   الأعمال الفنية (Artworks)
+-   الأعمال الأدبية (Literary)
+-   ورش فنية + ورش أدبية
+-   معرض برواز (Art Brwaz)
+-   المعارض الواقعية مع خريطة تفاعلية (Leaflet)
+-   المزاد الفني (مزاد مباشر/مستقبلي)
+-   لوحة مستخدم (Dashboard) وحساب شخصي
+-   إدارة كاملة عبر Filament Admin (CRUD / Forms / Media)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+تم التركيز على تجربة مستخدم متجاوبة (Desktop / Tablet / Mobile) مع قوائم ديناميكية، تحميل تدريجي، وخريطة تفاعلية.
 
-### Premium Partners
+## 🚀 المزايا الرئيسية
 
--   **[Vehikl](https://vehikl.com)**
--   **[Tighten Co.](https://tighten.co)**
--   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
--   **[64 Robots](https://64robots.com)**
--   **[Curotec](https://www.curotec.com/services/technologies/laravel)**
--   **[DevSquad](https://devsquad.com/hire-laravel-developers)**
--   **[Redberry](https://redberry.international/laravel-development)**
--   **[Active Logic](https://activelogic.com)**
+-   إدارة المعارض مع تحديد الإحداثيات (خرائط Leaflet + اختيار النقطة).
+-   واجهة عرض بطريقتين (Grid / Map) مع حفظ التفضيل في LocalStorage.
+-   تحميل المزيد (Load More) + استجابة JSON مع meta (صفحات، إجمالي، ...).
+-   معرض (Art Brwaz) مستقل.
+-   ورش فنية وأدبية (منسوخة الهيكلة لتوحيد التجربة).
+-   خاصية المزاد الفني.
+-   تحسين مسارات الصور عبر `asset_url` (التعامل مع التخزين / التخزين الرمزي).
+-   شريط تنقل يكيف الحالة النشطة ديناميكيًا.
+-   Filament Resource لكل كيان أساسي (Exhibition, Workshop, Artwork, Book, ...).
+-   دعم دفع Thawani (قابل للتفعيل عبر البيئة).
+-   Tailwind + Vite + PostCSS.
+-   تحسين تجربة التحميل (Skeletons + Empty State).
 
-## Contributing
+## 🛠 التقنيات
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| الجزء      | التقنية                                        |
+| ---------- | ---------------------------------------------- |
+| الإطار     | Laravel 10+                                    |
+| الواجهة    | Blade + TailwindCSS + Alpine.js (خفيف)         |
+| الإدارة    | FilamentPHP                                    |
+| الخرائط    | Leaflet 1.9.x                                  |
+| البناء     | Vite                                           |
+| الصور      | Storage + symlink (`php artisan storage:link`) |
+| المزاد     | نماذج + جداول مخصصة                            |
+| الدفع      | Thawani (اختياري)                              |
+| الاختبارات | PHPUnit                                        |
 
-## Code of Conduct
+## ⚡ التجهيز السريع
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+git clone <repo-url> brwazi
+cd brwazi
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed   # (اختياري حسب توفر seeders)
+php artisan storage:link
+npm install
+npm run dev                  # أو npm run build للإنتاج
+php artisan serve            # http://127.0.0.1:8000
+```
 
-## Security Vulnerabilities
+على Windows يفضَّل تشغيل الأوامر في Git Bash أو PowerShell (باستثناء ما يتطلب CMD فقط).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🔧 إعداد البيئة (.env)
 
-## License
+أهم المتغيرات:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```env
+APP_NAME=Brwazi
+APP_ENV=local
+APP_KEY=base64:...
+APP_URL=http://127.0.0.1:8000
 
-## Thawani (Oman) Payments
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=brwazi
+DB_USERNAME=root
+DB_PASSWORD=
 
-To enable live checkout, set the following in your `.env`:
+FILESYSTEM_DISK=public
+
+QUEUE_CONNECTION=database
+CACHE_STORE=file
+SESSION_DRIVER=file
+
+# Thawani (اختياري)
+THAWANI_SECRET=sk_test_xxx
+THAWANI_BASE_URL=https://checkout.thawani.om
+
+# Mail (مثال Mailgun)
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailgun.org
+MAIL_PORT=587
+MAIL_USERNAME=postmaster@example
+MAIL_PASSWORD=xxxx
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@example.com
+MAIL_FROM_NAME="Brwazi"
+```
+
+## 🎨 الواجهة الأمامية
+
+أوامر مفيدة:
+
+```bash
+npm run dev      # تطوير + HMR
+npm run build    # إنتاج مع Minify
+npm run preview  # معاينة إنتاجية (إن وُجد السكربت)
+```
+
+التصميم يعتمد على Tailwind. تجنّب استخدام `@apply` داخل شفرات Inline (تم إزالته في بعض الأقسام واستبداله بـ Classes).
+
+## 🖼 الصور
+
+-   تم تعديل `.gitignore` للسماح برفع `public/imgs/uploads` (أزلنا السطر الذي كان يستثنيه).
+-   اجعل عمليات الرفع تذهب إلى `storage/app/public` ثم استخدم `storage:link` للوصول عبر `/storage/...` عند الحاجة.
+-   إن رغبت بمنع رفع ملفات ضخمة مستقبلاً استخدم Git LFS أو أعد تفعيل الاستثناء.
+
+## 🗺 المعارض (Exhibitions)
+
+نقطة نهاية JSON (مثال):
+
+```
+GET /exhibitions?page=2&per_page=12
+```
+
+الاستجابة:
+
+```json
+{
+	"data": [ { "id": 10, "title": "...", "lat": 23.5, "lng": 58.38, ... } ],
+	"meta": {
+		"current_page": 2,
+		"last_page": 5,
+		"per_page": 12,
+		"total": 57,
+		"has_more": true
+	}
+}
+```
+
+الواجهة الأمامية تستخدم "Load More" لإلحاق النتائج + إضافة Marker للخريطة بدون إعادة تحميل الصفحة.
+
+## 📂 هيكل المجلدات (مختصر)
+
+```
+app/
+	Models/             # النماذج (Artwork, Exhibition, Workshop ...)
+	Http/Controllers/   # التحكم + API/Views
+	Filament/           # الموارد الإدارية
+resources/views/      # Blade templates
+public/               # الأصول النهائية (imgs, build, ...)
+routes/web.php        # المسارات العامة
+routes/api.php        # مسارات API الإضافية إن وجدت
+database/migrations/  # الترحيلات
+```
+
+## 🧪 الاختبارات
+
+تشغيل:
+
+```bash
+php artisan test
+# أو
+./vendor/bin/phpunit
+```
+
+أضف اختبارات للوحدات (Unit) + سلوك (Feature) خصوصًا للمعارض والمزادات.
+
+## 🔐 الأمان
+
+-   لا ترفع ملف `.env` أبدًا.
+-   راجع صلاحيات رفع الملفات (الامتدادات / الحجم).
+-   استخدم CSRF و Validation (موجود افتراضيًا في Laravel).
+-   نظّم صلاحيات لوحة التحكم (Filament Policies إن لزم).
+
+## 🤝 المساهمة
+
+Pull Requests مرحب بها. اقترح أولاً في Issue عند التغيير الجذري.  
+معايير مقترحة:
+
+1. التزم PSR-12.
+2. استخدم أسماء دلالية للفروع: `feature/exhibitions-filter` أو `fix/image-path`.
+3. اختبارات عند إضافة منطق عمل جديد.
+
+## 📄 الترخيص
+
+المشروع نفسه (ما لم يُذكر خلافه) تحت رخصة MIT. راجع رأس الملفات أو أضف LICENSE لاحقًا إن لم توجد.
+
+---
+
+## 🌍 English Summary
+
+Brwazi is a multi-section Laravel platform: artworks, literary content, art & literature workshops, physical & virtual exhibitions (with Leaflet map + coordinate picker), auctions, and an Art Brwaz gallery. It ships with a responsive multi-breakpoint navigation, JSON pagination for exhibitions, Filament admin resources, Thawani payment integration (optional), Tailwind + Vite asset pipeline, and progressive UX patterns (skeleton loaders, load-more, local preference persistence).
+
+### Key Features
+
+-   Exhibitions with geo markers + map/grid toggle.
+-   Workshops (art + literature) & gallery.
+-   Auction module (extensible).
+-   Filament admin CRUD for core entities.
+-   Thawani integration (via ENV keys).
+-   Asset pipeline (Vite, Tailwind, PostCSS).
+-   Custom asset helper for resilient image paths.
+
+### Quick Start
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+npm install && npm run dev
+php artisan serve
+```
+
+### Env (Excerpt)
 
 ```
 THAWANI_SECRET=sk_test_xxx
 THAWANI_BASE_URL=https://checkout.thawani.om
+FILESYSTEM_DISK=public
 ```
 
-When keys are not present, the checkout flow uses a mock success URL for local testing.
+### Exhibitions JSON
+
+```
+GET /exhibitions?page=1&per_page=12
+```
+
+Returns `{ data: [...], meta: { current_page, last_page, total, has_more } }`.
+
+### Contributing
+
+Open an issue → branch → PR. Include tests where logic changes.
+
+---
+
+إذا احتجت توثيقًا إضافيًا (مثلاً: إعداد المزاد، أو بث حي)، أضف Issue أو حدث README لاحقًا.
+
+شكراً لاستخدامك Brwazi 💜
