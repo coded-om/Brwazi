@@ -145,11 +145,12 @@
             <!-- Section Header -->
             <div class="text-center sm:text-right mb-6 sm:mb-8 md:mb-12">
                 <div>
-                    <h2
-                        class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 arabic-font-bold mb-2 flex">
-                        <img class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14"
-                            src="{{ asset('imgs/icons-color/art-icon.svg') }}" alt="فنانين" loading="lazy"
-                            decoding="async"> <span class="mr-2">الفنانين</span>
+                    <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 arabic-font-bold mb-2 flex">
+                        <a href="{{ route('artists.index') }}" class="group inline-flex items-center hover:text-category-art focus:outline-none focus-visible:ring-2 focus-visible:ring-category-art/50 rounded-md transition-colors">
+                            <img class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 transform group-hover:scale-110 transition-transform duration-300"
+                                src="{{ asset('imgs/icons-color/art-icon.svg') }}" alt="الفنانين" loading="lazy" decoding="async">
+                            <span class="mr-2 underline decoration-transparent group-hover:decoration-category-art group-hover:underline-offset-4 transition-[text-decoration-color] duration-300">الفنانين</span>
+                        </a>
                     </h2>
                     <p class="text-xs sm:text-sm md:text-base text-gray-600 arabic-font">
                         تعرف على مجموعة من أبرز الفنانين
@@ -173,7 +174,7 @@
                         </div>
                         <!-- Navigation Button -->
                         <button
-                            class=" absolute bottom-3 left-3 sm:bottom-4 sm:left-4  bg-white bg-opacity-20 hover:bg-red-500 text-white px-3 py-2 sm:px-4 sm:py-3 rounded-full transition-all duration-300 flex items-center gap-1 sm:gap-2">
+                            class=" absolute bottom-3 left-3 sm:bottom-4 sm:left-4  bg-gray-700 bg-opacity-20 hover:bg-red-500 text-white px-3 py-2 sm:px-4 sm:py-3 rounded-xl transition-all duration-300 flex items-center gap-1 sm:gap-2">
                             <span class="text-xs sm:text-sm arabic-font">متابعة</span>
                             <i class="fas fa-chevron-left "></i>
                         </button>

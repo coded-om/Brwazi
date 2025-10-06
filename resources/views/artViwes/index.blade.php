@@ -15,7 +15,6 @@
 
                 @media (max-width: 640px) {
                     .brw-notify-wrapper {
-                        
                         top: calc(4.5rem + 3.25rem);
                     }
                 }
@@ -51,10 +50,10 @@
             }
         </style>
     @endpush
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-12" data-aos="fade-up">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-aos="fade-up">
 
         <!-- Category filter: dropdown بدل التبويبات -->
-        <div class="flex items-center justify-between  gap-3 border-solid border-b border-gray-200 mb-16 pb-7"
+        <div class="flex items-center justify-between  gap-3 border-solid border-b border-gray-200 mb-16 pb-7  mt-12"
             data-aos="fade-up" data-aos-delay="100">
             <button type="button" data-slide-target="filters"
                 class="h-9 w-9 inline-flex items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200"

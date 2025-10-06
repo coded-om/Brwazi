@@ -376,151 +376,179 @@
         </div>
     </div>
 
-    <!-- Mobile Menu (Overlay) -->
-    <div id="mobile-menu" class="mobile-menu md:hidden fixed inset-0 bg-[#141640] z-50">
-        <div class="flex flex-col h-full">
-            <!-- Mobile Menu Header -->
-            <div class="flex justify-between items-center h-16 px-4 border-b border-white/20">
-                <div class="flex items-center">
-                    <a href="/">
-                        <img src="{{ asset('logo.svg') }}" alt="وزارة الصحة والسكان" class="h-8 w-auto">
-                    </a>
-                </div>
-                <button id="mobile-menu-close" class="text-white p-2 rounded-md hover:bg-white/20 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+</header>
+<!-- Mobile Menu moved outside header to avoid sticky clipping -->
+<div id="mobile-menu" class="mobile-menu md:hidden fixed inset-0 h-screen bg-transparent z-[2147483000] hidden opacity-0 transition-opacity duration-300" aria-hidden="true" style="z-index:2147483000;">
+    <!-- Backdrop -->
+    <div data-mobile-menu-backdrop class="absolute inset-0 bg-[#141640]/95 backdrop-blur-sm opacity-100"></div>
+    <div data-mobile-menu-panel class="flex flex-col h-full w-full max-w-full sm:max-w-md ms-auto bg-[#141640] shadow-2xl transform translate-x-full transition-transform duration-300 ease-out relative z-10">
+        <!-- Close zone (optional clickable backdrop) -->
+        <!-- Header -->
+        <div class="flex justify-between items-center h-16 px-4 border-b border-white/20">
+            <a href="/" aria-label="الرئيسية">
+                <img src="{{ asset('logo.svg') }}" alt="الشعار" class="h-8 w-auto">
+            </a>
+            <button id="mobile-menu-close" class="text-white p-2 rounded-md hover:bg-white/20 transition-colors" aria-label="اغلاق القائمة">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <!-- Content -->
+        <div class="flex-1 overflow-y-auto p-4 min-h-0">
+            <div class="space-y-2 mb-6" x-data="{ openArt: {{ $isActive(['workshops*','exhibitions*']) ? 'true':'false' }}, openLiterary: {{ $isActive('literature-workshops*') ? 'true':'false' }} }">
+                <!-- Art parent -->
+                <button @click="openArt=!openArt" :aria-expanded="openArt.toString()" class="w-full flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive(['art','workshops*','exhibitions*']) ? 'bg-white/10' : '' }}">
+                    <span class="flex items-center gap-3">
+                        <img src="{{ $isActive(patterns: ['art','workshops*','exhibitions*']) ? asset('imgs/icons-color/eye-category.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="الاعمال الفنية" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                        <span>الاعمال الفنية</span>
+                    </span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="openArt ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
-            </div>
-
-            <!-- Mobile Menu Content -->
-            <div class="flex-1 overflow-y-auto p-4 min-h-0">
-                <!-- Categories -->
-                <div class="space-y-2 mb-6" x-data="{ openArt: {{ $isActive(['workshops*','exhibitions*']) ? 'true':'false' }}, openLiterary: {{ $isActive('literature-workshops*') ? 'true':'false' }} }">
-                    <!-- Art parent -->
-                    <button @click="openArt=!openArt" :aria-expanded="openArt.toString()"
-                        class="w-full flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive(['art','workshops*','exhibitions*']) ? 'bg-white/10' : '' }}">
-                        <span class="flex items-center gap-3">
-                            <img src="{{ $isActive(patterns: ['art','workshops*','exhibitions*']) ? asset('imgs/icons-color/eye-category.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="الاعمال الفنية" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
-                            <span>الاعمال الفنية</span>
-                        </span>
-                        <svg class="w-4 h-4 transition-transform duration-200" :class="openArt ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                    </button>
-                    <div x-show="openArt" x-transition.opacity x-collapse class="ms-8 space-y-1">
-                        <a href="{{ route('workshops.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('workshops*') ? 'bg-white/10' : '' }}" {{ $isActive('workshops*') ? 'aria-current="page"' : '' }}>
-                            <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات الفنية" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
-                            <span>ورشات الفنية</span>
-                        </a>
-                        <a href="{{ route('exhibitions.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('exhibitions*') ? 'bg-white/10' : '' }}" {{ $isActive('exhibitions*') ? 'aria-current="page"' : '' }}>
-                            <img src="{{ $isActive(patterns: 'exhibitions*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="المعارض" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
-                            <span>المعارض</span>
-                        </a>
-                    </div>
-
-                    <!-- Literary parent -->
-                    <button @click="openLiterary=!openLiterary" :aria-expanded="openLiterary.toString()"
-                        class="w-full flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive(['literary*','literature-workshops*']) ? 'bg-white/10' : '' }}">
-                        <span class="flex items-center gap-3">
-                            <img src="{{ $isActive(patterns: ['literary*','literature-workshops*']) ? asset('imgs/icons-color/peper-category.svg') : asset('imgs/icons-no-colors/peper-category.svg') }}" alt="الاعمال الادبية" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
-                            <span>الاعمال الادبية</span>
-                        </span>
-                        <svg class="w-4 h-4 transition-transform duration-200" :class="openLiterary ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                    </button>
-                    <div x-show="openLiterary" x-transition.opacity x-collapse class="ms-8 space-y-1">
-                        <a href="/literary" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('literary') ? 'bg-white/10' : '' }}" {{ $isActive('literary') ? 'aria-current="page"' : '' }}>
-                            <img src="{{ $isActive(patterns: 'literary') ? asset('imgs/icons-color/peper-category.svg') : asset('imgs/icons-no-colors/peper-category.svg') }}" alt="الاعمال الادبية" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
-                            <span>الرئيسية الأدبية</span>
-                        </a>
-                        <a href="{{ route('literature_workshops.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('literature-workshops*') ? 'bg-white/10' : '' }}" {{ $isActive('literature-workshops*') ? 'aria-current="page"' : '' }}>
-                            <i class="fa-solid fa-feather text-xs"></i>
-                            <span>ورشات أدبية</span>
-                        </a>
-                    </div>
-
-                    <!-- Art Brwaz -->
-                    <a href="{{ route('artbrwaz.index') }}"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('art-brwaz*') ? 'bg-white/10' : '' }}" {{ $isActive('art-brwaz*') ? 'aria-current=\"page\"' : '' }}>
-                        <img src="{{ $isActive(patterns: 'art-brwaz*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="معرض برواز" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
-                        <span>معرض برواز</span>
+                <div x-show="openArt" x-transition.opacity class="ms-8 space-y-1 overflow-hidden" x-ref="artWrap" x-bind:style="openArt ? 'max-height:' + $refs.artWrap.scrollHeight + 'px' : 'max-height:0'">
+                    <a href="{{ route('workshops.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('workshops*') ? 'bg-white/10' : '' }}" {{ $isActive('workshops*') ? 'aria-current="page"' : '' }}>
+                        <img src="{{ $isActive(patterns: 'workshops*') ? asset('imgs/icons-color/art-icon.svg') : asset('imgs/icons-no-colors/eye-category.svg') }}" alt="ورشات الفنية" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
+                        <span>ورشات الفنية</span>
                     </a>
-                    <!-- Mazad -->
-                    <a href="/mazad"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('mazad') ? 'bg-white/10' : '' }}" {{ $isActive('mazad') ? 'aria-current=\"page\"' : '' }}>
-                        <img src="{{ $isActive(patterns: 'mazad*') ? asset('imgs/icons-color/mazad.svg') : asset('imgs/icons-no-colors/mazad-category.svg') }}" alt="المزاد الفني" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
-                        <span>المزاد الفني</span>
+                    <a href="{{ route('exhibitions.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('exhibitions*') ? 'bg-white/10' : '' }}" {{ $isActive('exhibitions*') ? 'aria-current="page"' : '' }}>
+                        <img src="{{ $isActive(patterns: 'exhibitions*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="المعارض" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
+                        <span>المعارض</span>
                     </a>
                 </div>
-
-                <div class="border-t border-white/20 pt-4 space-y-2">
-                    <a href="#"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white">
-                        <i class="fas fa-mobile-alt text-lg text-white"></i>
-                        <span>التطبيق</span>
+                <!-- Literary parent -->
+                <button @click="openLiterary=!openLiterary" :aria-expanded="openLiterary.toString()" class="w-full flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive(['literary*','literature-workshops*']) ? 'bg-white/10' : '' }}">
+                    <span class="flex items-center gap-3">
+                        <img src="{{ $isActive(patterns: ['literary*','literature-workshops*']) ? asset('imgs/icons-color/peper-category.svg') : asset('imgs/icons-no-colors/peper-category.svg') }}" alt="الاعمال الادبية" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                        <span>الاعمال الادبية</span>
+                    </span>
+                    <svg class="w-4 h-4 transition-transform duration-200" :class="openLiterary ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div x-show="openLiterary" x-transition.opacity class="ms-8 space-y-1 overflow-hidden" x-ref="litWrap" x-bind:style="openLiterary ? 'max-height:' + $refs.litWrap.scrollHeight + 'px' : 'max-height:0'">
+                    <a href="/literary" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('literary') ? 'bg-white/10' : '' }}" {{ $isActive('literary') ? 'aria-current="page"' : '' }}>
+                        <img src="{{ $isActive(patterns: 'literary') ? asset('imgs/icons-color/peper-category.svg') : asset('imgs/icons-no-colors/peper-category.svg') }}" alt="الاعمال الادبية" class="w-5 h-5 icon-white" loading="lazy" decoding="async">
+                        <span>الرئيسية الأدبية</span>
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white">
-                        <i class="fas fa-store text-lg text-white"></i>
-                        <span>المتجر</span>
-                    </a>
-                    <a href="#"
-                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white">
-                        <i class="fas fa-newspaper text-lg text-white"></i>
-                        <span>الأخبار</span>
+                    <a href="{{ route('literature_workshops.index') }}" class="flex items-center gap-2 p-2 rounded-md text-sm hover:bg-white/10 transition-colors text-white {{ $isActive('literature-workshops*') ? 'bg-white/10' : '' }}" {{ $isActive('literature-workshops*') ? 'aria-current="page"' : '' }}>
+                        <i class="fa-solid fa-feather text-xs"></i>
+                        <span>ورشات أدبية</span>
                     </a>
                 </div>
+                <!-- Art Brwaz -->
+                <a href="{{ route('artbrwaz.index') }}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('art-brwaz*') ? 'bg-white/10' : '' }}" {{ $isActive('art-brwaz*') ? 'aria-current="page"' : '' }}>
+                    <img src="{{ $isActive(patterns: 'art-brwaz*') ? asset('imgs/icons-color/gallery-icon.svg') : asset('imgs/icons-no-colors/show-category.svg') }}" alt="معرض برواز" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                    <span>معرض برواز</span>
+                </a>
+                <!-- Mazad -->
+                <a href="/mazad" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white {{ $isActive('mazad') ? 'bg-white/10' : '' }}" {{ $isActive('mazad') ? 'aria-current="page"' : '' }}>
+                    <img src="{{ $isActive(patterns: 'mazad*') ? asset('imgs/icons-color/mazad.svg') : asset('imgs/icons-no-colors/mazad-category.svg') }}" alt="المزاد الفني" class="w-6 h-6 icon-white" loading="lazy" decoding="async">
+                    <span>المزاد الفني</span>
+                </a>
             </div>
-
-            <!-- Mobile Menu Footer -->
-            <div class="border-t border-white/20 p-4 space-y-3">
-                @auth
-                    <!-- User Info in Mobile Menu -->
-                    <div class="flex items-center gap-3 p-3 rounded-lg bg-white/10 text-white">
-                        <div class="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center">
-                            @if(auth()->user()->ProfileImage)
-                                <img src="{{ asset('storage/' . auth()->user()->ProfileImage) }}" alt="الصورة الشخصية" class="h-full w-full object-cover">
-                            @else
-                                <i class="fas fa-user text-white text-lg"></i>
-                            @endif
-                        </div>
-                        <div>
-                            <p class="font-medium">{{ auth()->user()->fname }} {{ auth()->user()->lname }}</p>
-                            <p class="text-sm text-white/70">{{ auth()->user()->email }}</p>
-                        </div>
-                    </div>
-
-                    <a href="{{ route('user.dashboard') }}"
-                        class="w-full flex items-center justify-center gap-2 text-white px-4 py-2 rounded-md hover:bg-white/20 transition-colors">
-                        <i class="fas fa-tachometer-alt"></i>
-                        لوحة التحكم
-                    </a>
-                    <a href="{{ route('user.profile') }}"
-                        class="w-full flex items-center justify-center gap-2 text-white px-4 py-2 rounded-md hover:bg-white/20 transition-colors">
-                        <i class="fas fa-user-edit"></i>
-                        تعديل الملف الشخصي
-                    </a>
-                    <form method="POST" action="{{ route('logout') }}" class="block">
-                        @csrf
-                        <button type="submit" class="w-full flex items-center justify-center gap-2 text-red-300 px-4 py-2 rounded-md hover:bg-red-500/20 transition-colors">
-                            <i class="fas fa-sign-out-alt"></i>
-                            تسجيل الخروج
-                        </button>
-                    </form>
-                @else
-                    @if (!request()->is('login') && !request()->is('forgot-password'))
-                        <a href="/login"
-                            class="w-full text-white px-4 py-2 rounded-md hover:bg-[#9B4F9F] transition-colors block text-center">
-                            تسجيل دخول
-                        </a>
-                    @endif
-                    @if (!request()->is('register') && !request()->is('forgot-password'))
-                        <a href="/register"
-                            class="w-full text-[#4D5B93] px-4 py-2 rounded-md bg-white hover:bg-white/90 transition-colors block text-center">
-                            تسجيل
-                        </a>
-                    @endif
-                @endauth
+            <div class="border-t border-white/20 pt-4 space-y-2">
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white"><i class="fas fa-mobile-alt text-lg text-white"></i><span>التطبيق</span></a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white"><i class="fas fa-store text-lg text-white"></i><span>المتجر</span></a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors text-white"><i class="fas fa-newspaper text-lg text-white"></i><span>الأخبار</span></a>
             </div>
         </div>
+        <!-- Footer -->
+        <div class="border-t border-white/20 p-4 space-y-3 overflow-y-auto max-h-[40%]">
+            @auth
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/10 text-white">
+                    <div class="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center">
+                        @if(auth()->user()->ProfileImage)
+                            <img src="{{ asset('storage/' . auth()->user()->ProfileImage) }}" alt="الصورة الشخصية" class="h-full w-full object-cover">
+                        @else
+                            <i class="fas fa-user text-white text-lg"></i>
+                        @endif
+                    </div>
+                    <div>
+                        <p class="font-medium">{{ auth()->user()->fname }} {{ auth()->user()->lname }}</p>
+                        <p class="text-sm text-white/70">{{ auth()->user()->email }}</p>
+                    </div>
+                </div>
+                <a href="{{ route('user.dashboard') }}" class="w-full flex items-center justify-center gap-2 text-white px-4 py-2 rounded-md hover:bg-white/20 transition-colors"><i class="fas fa-tachometer-alt"></i>لوحة التحكم</a>
+                <a href="{{ route('user.profile') }}" class="w-full flex items-center justify-center gap-2 text-white px-4 py-2 rounded-md hover:bg-white/20 transition-colors"><i class="fas fa-user-edit"></i>تعديل الملف الشخصي</a>
+                <form method="POST" action="{{ route('logout') }}" class="block">@csrf<button type="submit" class="w-full flex items-center justify-center gap-2 text-red-300 px-4 py-2 rounded-md hover:bg-red-500/20 transition-colors"><i class="fas fa-sign-out-alt"></i>تسجيل الخروج</button></form>
+            @else
+                @if (!request()->is('login') && !request()->is('forgot-password'))
+                    <a href="/login" class="w-full text-white px-4 py-2 rounded-md hover:bg-[#9B4F9F] transition-colors block text-center">تسجيل دخول</a>
+                @endif
+                @if (!request()->is('register') && !request()->is('forgot-password'))
+                    <a href="/register" class="w-full text-[#4D5B93] px-4 py-2 rounded-md bg-white hover:bg-white/90 transition-colors block text-center">تسجيل</a>
+                @endif
+            @endauth
+        </div>
     </div>
-</header>
+</div>
+<script>
+// Mobile menu toggle (vanilla JS) – improved layering + focus trap
+(function(){
+    const menu = document.getElementById('mobile-menu');
+    const openBtn = document.getElementById('mobile-menu-btn');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const panel = menu ? menu.querySelector('[data-mobile-menu-panel]') : null;
+    const backdrop = menu ? menu.querySelector('[data-mobile-menu-backdrop]') : null;
+    if(!menu || !openBtn || !panel) return;
+    let isAnimating = false;
+    let scrollPosition = 0;
+    let focusables = [];
+    let firstFocusable, lastFocusable;
+
+    function collectFocusables(){
+        focusables = Array.from(panel.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+            .filter(el => !el.hasAttribute('aria-hidden'));
+        firstFocusable = focusables[0];
+        lastFocusable = focusables[focusables.length - 1];
+    }
+
+    function lockScroll(){
+        scrollPosition = window.scrollY || document.documentElement.scrollTop;
+        document.body.style.top = `-${scrollPosition}px`;
+        document.body.classList.add('overflow-hidden');
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+    }
+    function unlockScroll(){
+        document.body.classList.remove('overflow-hidden');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollPosition);
+    }
+
+    function openMenu(){
+        if(isAnimating) return; isAnimating = true;
+        menu.classList.remove('hidden');
+        requestAnimationFrame(()=>{
+            menu.classList.remove('opacity-0');
+            panel.classList.remove('translate-x-full');
+            lockScroll();
+            collectFocusables();
+            menu.setAttribute('aria-hidden','false');
+            if(firstFocusable) firstFocusable.focus({preventScroll:true});
+            setTimeout(()=>{ isAnimating = false; }, 340);
+        });
+    }
+    function closeMenu(){
+        if(isAnimating) return; isAnimating = true;
+        panel.classList.add('translate-x-full');
+        menu.classList.add('opacity-0');
+        menu.setAttribute('aria-hidden','true');
+        unlockScroll();
+        setTimeout(()=>{ if(menu.classList.contains('opacity-0')) { menu.classList.add('hidden'); } isAnimating = false; }, 340);
+        if(openBtn) openBtn.focus({preventScroll:true});
+    }
+
+    // Focus trap
+    panel.addEventListener('keydown', e => {
+        if(e.key === 'Tab' && focusables.length){
+            if(e.shiftKey && document.activeElement === firstFocusable){ e.preventDefault(); lastFocusable.focus(); }
+            else if(!e.shiftKey && document.activeElement === lastFocusable){ e.preventDefault(); firstFocusable.focus(); }
+        }
+    });
+
+    openBtn.addEventListener('click', e=>{ e.preventDefault(); openMenu(); });
+    if(closeBtn) closeBtn.addEventListener('click', e=>{ e.preventDefault(); closeMenu(); });
+    if(backdrop) backdrop.addEventListener('click', ()=> closeMenu());
+    document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeMenu(); });
+    window.addEventListener('resize', ()=>{ if(window.innerWidth >= 1024) closeMenu(); });
+})();
+</script>
