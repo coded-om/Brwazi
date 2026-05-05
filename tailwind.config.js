@@ -15,6 +15,7 @@ export default {
             colors: {
                 brwazi: {
                     purple: "#6161ab",
+                    purpleDark: "#5555a0",
                     dark: "#141640",
                     pink: "#9B4F9F",
                     blue: "#2563eb",

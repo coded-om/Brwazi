@@ -1,9 +1,7 @@
 @php
     $categories = $categories ?? [];
     $selectedCategory = $selectedCategory ?? null;
-    $featured = $featured ?? collect();
     $artworks = $artworks ?? collect();
-    $explore = $explore ?? true;
 @endphp
 <x-layout>
     @if(auth()->check() && auth()->user()->isBanned())
@@ -264,91 +262,93 @@
                 </script>
             @endonce
         @endpush
-        <!-- Advanced Filters Slide-over (reusable component) -->
-        <x-slide-over id="filters" title="فلترة متقدمة" side="right" maxWidth="max-w-sm">
-            <form action="{{ url('/art') }}" method="GET" class="space-y-5">
-                @if(request()->filled('mode'))
-                    <input type="hidden" name="mode" value="{{ request('mode') }}">
-                @endif
-                <input type="hidden" name="category" value="{{ $selectedCategory }}">
-                @if(request()->filled('filter'))
-                    <input type="hidden" name="filter" value="{{ request('filter') }}">
-                @endif
+    </div><!-- /max-w container -->
+    <!-- Advanced Filters Slide-over (reusable component moved outside container) -->
+    <x-slide-over id="filters" title="فلترة متقدمة" side="right" maxWidth="max-w-sm">
+        <form action="{{ url('/art') }}" method="GET" class="space-y-5">
+            @if(request()->filled('mode'))
+                <input type="hidden" name="mode" value="{{ request('mode') }}">
+            @endif
+            <input type="hidden" name="category" value="{{ $selectedCategory }}">
+            @if(request()->filled('filter'))
+                <input type="hidden" name="filter" value="{{ request('filter') }}">
+            @endif
 
+            <div>
+                <label class="block text-xs text-gray-600 mb-1">كلمة مفتاحية</label>
+                <input type="text" name="q" value="{{ request('q') }}"
+                    class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
+                    placeholder="ابحث بعنوان العمل أو الفنان">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs text-gray-600 mb-1">كلمة مفتاحية</label>
-                    <input type="text" name="q" value="{{ request('q') }}"
+                    <label class="block text-xs text-gray-600 mb-1">السعر الأدنى</label>
+                    <input type="number" step="0.01" name="min" value="{{ request('min') }}"
                         class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
-                        placeholder="ابحث بعنوان العمل أو الفنان">
+                        placeholder="0.00">
                 </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">السعر الأدنى</label>
-                        <input type="number" step="0.01" name="min" value="{{ request('min') }}"
-                            class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
-                            placeholder="0.00">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">السعر الأقصى</label>
-                        <input type="number" step="0.01" name="max" value="{{ request('max') }}"
-                            class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
-                            placeholder="9999.00">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">من سنة</label>
-                        <input type="number" name="year_from" value="{{ request('year_from') }}"
-                            class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
-                            placeholder="2000">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">إلى سنة</label>
-                        <input type="number" name="year_to" value="{{ request('year_to') }}"
-                            class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
-                            placeholder="2025">
-                    </div>
-                </div>
-
                 <div>
-                    <label class="block text-xs text-gray-600 mb-1">نوع العمل</label>
-                    <input type="text" name="type" value="{{ request('type') }}"
+                    <label class="block text-xs text-gray-600 mb-1">السعر الأقصى</label>
+                    <input type="number" step="0.01" name="max" value="{{ request('max') }}"
                         class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
-                        placeholder="لوحة، تصوير فوتوغرافي ...">
+                        placeholder="9999.00">
                 </div>
+            </div>
 
+            <div class="grid grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs text-gray-600 mb-1">اسم الفنان</label>
-                    <input type="text" name="artist_name" value="{{ request('artist_name') }}"
+                    <label class="block text-xs text-gray-600 mb-1">من سنة</label>
+                    <input type="number" name="year_from" value="{{ request('year_from') }}"
                         class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
-                        placeholder="مثال: أحمد">
+                        placeholder="2000">
                 </div>
-
                 <div>
-                    <label class="block text-xs text-gray-600 mb-1">الترتيب</label>
-                    <select name="sort"
-                        class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100">
-                        @php $sort = request('sort', 'latest'); @endphp
-                        <option value="latest" {{ $sort === 'latest' ? 'selected' : '' }}>الأحدث</option>
-                        <option value="price-asc" {{ $sort === 'price-asc' ? 'selected' : '' }}>السعر: من الأقل
-                            للأعلى</option>
-                        <option value="price-desc" {{ $sort === 'price-desc' ? 'selected' : '' }}>السعر: من الأعلى
-                            للأقل</option>
-                    </select>
+                    <label class="block text-xs text-gray-600 mb-1">إلى سنة</label>
+                    <input type="number" name="year_to" value="{{ request('year_to') }}"
+                        class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
+                        placeholder="2025">
                 </div>
+            </div>
 
-                <div
-                    class="sticky bottom-0 -mx-4 px-4 pt-2 pb-3 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70">
-                    <div class="flex items-center justify-between">
-                        <a href="{{ url('/art') }}" class="text-sm text-gray-600 hover:text-indigo-700">إعادة
-                            التعيين</a>
-                        <button type="submit"
-                            class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">تطبيق
-                            الفلاتر</button>
-                    </div>
+            <div>
+                <label class="block text-xs text-gray-600 mb-1">نوع العمل</label>
+                <input type="text" name="type" value="{{ request('type') }}"
+                    class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
+                    placeholder="لوحة، تصوير فوتوغرافي ...">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-600 mb-1">اسم الفنان</label>
+                <input type="text" name="artist_name" value="{{ request('artist_name') }}"
+                    class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100"
+                    placeholder="مثال: أحمد">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-600 mb-1">الترتيب</label>
+                <select name="sort"
+                    class="w-full rounded-lg border border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-indigo-100">
+                    @php $sort = request('sort', 'latest'); @endphp
+                    <option value="latest" {{ $sort === 'latest' ? 'selected' : '' }}>الأحدث</option>
+                    <option value="price-asc" {{ $sort === 'price-asc' ? 'selected' : '' }}>السعر: من الأقل
+                        للأعلى</option>
+                    <option value="price-desc" {{ $sort === 'price-desc' ? 'selected' : '' }}>السعر: من الأعلى
+                        للأقل</option>
+                </select>
+            </div>
+
+            <div
+                class="sticky bottom-0 -mx-4 px-4 pt-2 pb-3 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+                <div class="flex items-center justify-between">
+                    <a href="{{ url('/art') }}" class="text-sm text-gray-600 hover:text-indigo-700">إعادة
+                        التعيين</a>
+                    <button type="submit" style="background-color:#4f46e5"
+                        class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed select-none">
+                        تطبيق الفلاتر
+                    </button>
                 </div>
-            </form>
-        </x-slide-over>
+            </div>
+        </form>
+    </x-slide-over>
 </x-layout>

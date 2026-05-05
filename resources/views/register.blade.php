@@ -183,7 +183,7 @@
                     <!-- Submit Button -->
                     <div>
                         <button type="submit"
-                            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#6161ab] hover:bg-[#5555a0] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6161ab] transition-colors duration-200">
+                            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-brwazi-purple hover:bg-brwazi-purpleDark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brwazi-purple transition-colors duration-200">
                             إنشاء حساب
                         </button>
                     </div>
